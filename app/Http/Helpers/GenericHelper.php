@@ -127,12 +127,12 @@ class GenericHelper
 
   public static function handleSearchValue(
     Builder $builderInstance,
-    $compareKey,
-    $compareValue
+    $searchKey,
+    $searchValue
   ) {
-    if (preg_match(self::SearchRegex, $compareKey)) {
-      $attributeName = preg_replace(self::SearchRegex, "$1", $compareKey);
-      return $builderInstance->where($attributeName, "like", '%' . $compareValue . '%');
+    if (preg_match(self::SearchRegex, $searchKey)) {
+      $attributeName = preg_replace(self::SearchRegex, "$1", $searchKey);
+      return $builderInstance->where($attributeName, "like", '%' . $searchValue . '%');
     }
 
     throw new GenericAppException(['Your search value validation has failed.', 500]);
@@ -169,10 +169,10 @@ class GenericHelper
 
   public static function handleSearchValues(
     Builder $builderInstance,
-    array $compareValues
+    array $searchValues
   ) {
-    foreach ($compareValues as $compareKey => $compareValue) {
-      $builderInstance = self::handleSearchValue($builderInstance, $compareKey, $compareValue);
+    foreach ($searchValues as $compareKey => $searchValue) {
+      $builderInstance = self::handleSearchValue($builderInstance, $compareKey, $searchValue);
     }
 
     return $builderInstance;
