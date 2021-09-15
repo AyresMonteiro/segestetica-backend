@@ -154,6 +154,8 @@ return [
     'attributes' => [
         'email' => 'e-mail',
         'password' => 'senha',
+        'name' => 'nome',
+        'abbreviation' => 'sigla'
     ],
 
 ];
