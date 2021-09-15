@@ -50,8 +50,8 @@ class Neighborhood extends Model
     public static function getUpdateValidator(array $data)
     {
         return Validator::make($data, [
-            'name' => ['required', 'string'],
-            'cityId' => ['required', 'integer', 'exists:cities,id'],
+            'name' => ['required_without_all:cityId', 'string'],
+            'cityId' => ['required_without_all:name', 'integer', 'exists:cities,id'],
         ]);
     }
 
