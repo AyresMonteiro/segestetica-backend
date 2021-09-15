@@ -157,6 +157,7 @@ return [
         'name' => 'nome',
         'abbreviation' => 'sigla',
         'stateId' => 'id_estado',
+        'cityId' => 'id_cidade',
     ],
 
 ];
