@@ -4,6 +4,7 @@ use App\Http\Controllers\{
     CityController,
     NeighborhoodController,
     StateController,
+    StreetController,
 };
 use App\Http\Helpers\GenericHelper;
 use Illuminate\Http\Request;
@@ -46,4 +47,12 @@ Route::group(['prefix' => 'neighborhoods'], function () {
     Route::post('/', GenericHelper::genericTryCatchFactory(NeighborhoodController::store()));
     Route::put('/{id}', GenericHelper::genericTryCatchFactory(NeighborhoodController::update()));
     Route::delete('/{id}', GenericHelper::genericTryCatchFactory(NeighborhoodController::destroy()));
+});
+
+Route::group(['prefix' => 'streets'], function () {
+    Route::get('/', GenericHelper::genericTryCatchFactory(StreetController::index()));
+    Route::get('/{id}', GenericHelper::genericTryCatchFactory(StreetController::show()));
+    Route::post('/', GenericHelper::genericTryCatchFactory(StreetController::store()));
+    Route::put('/{id}', GenericHelper::genericTryCatchFactory(StreetController::update()));
+    Route::delete('/{id}', GenericHelper::genericTryCatchFactory(StreetController::destroy()));
 });
