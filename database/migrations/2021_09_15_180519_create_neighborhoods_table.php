@@ -19,7 +19,12 @@ class CreateNeighborhoodsTable extends Migration
             $table->unsignedBigInteger('cityId');
             $table->timestamps();
 
-            $table->foreign('cityId')->references('id')->on('cities');
+            $table
+                ->foreign('cityId')
+                ->references('id')
+                ->on('cities')
+                ->onDelete('set null')
+                ->onUpdate('cascade');
         });
     }
 
