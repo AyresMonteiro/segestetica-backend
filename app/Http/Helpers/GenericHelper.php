@@ -9,7 +9,6 @@ use Exception;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator as FacadesValidator;
 
 class GenericHelper
@@ -43,14 +42,35 @@ class GenericHelper
     }
   }
 
-  public static function validateUUID($uuid, $messages = [
-    'uuid.required' => 'Envie um identificador!',
-    'uuid.regex' => 'Envie um identificador válido!',
-  ], $paramName = 'uuid')
+  public static function generateIdMessages(string $paramName = 'uuid')
   {
+    return [
+      $paramName . '.required' => 'Envie um identificador!',
+      $paramName . '.regex' => 'Envie um identificador válido!',
+      $paramName . '.integer' => 'Envie um identificador válido!',
+    ];
+  }
+
+  public static function validateUUID($uuid, array $messages, $paramName = 'uuid')
+  {
+    if (sizeof($messages) === 0) {
+      $messages = self::generateIdMessages('uuid');
+    }
+
     $validator = FacadesValidator::make(
       [$paramName => $uuid],
       [$paramName => ['required', 'regex:' . self::UUIDRegex]],
+      $messages
+    );
+
+    self::validate($validator);
+  }
+
+  public static function validateId($id, array $messages, $paramName = 'id')
+  {
+    $validator = FacadesValidator::make(
+      [$paramName => $id],
+      [$paramName => ['required', 'integer']],
       $messages
     );
 
