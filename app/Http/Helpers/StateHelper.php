@@ -122,9 +122,9 @@ class StateHelper
 
   protected static function updateState(array $findData, array $updateData)
   {
-    GenericHelper::validate(State::getUpdateValidator($updateData));
-
     $state = self::getState($findData);
+
+    GenericHelper::validate(State::getUpdateValidator($updateData));
 
     $state->fill($updateData);
 

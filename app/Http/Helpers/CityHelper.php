@@ -122,9 +122,9 @@ class CityHelper
 
   protected static function updateCity(array $findData, array $updateData)
   {
-    GenericHelper::validate(City::getUpdateValidator($updateData));
-
     $city = self::getCity($findData);
+
+    GenericHelper::validate(City::getUpdateValidator($updateData));
 
     $city->fill($updateData);
 
