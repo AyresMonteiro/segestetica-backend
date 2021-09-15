@@ -5,6 +5,7 @@ namespace App\Http\Helpers;
 use App\Exceptions\GenericAppException;
 use App\Http\Handlers\ErrorResponseHandler;
 use App\Http\Handlers\ValidatorHandler;
+use Closure;
 use Exception;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Database\Eloquent\Builder;
@@ -18,11 +19,11 @@ class GenericHelper
   public const LesserThanRegex = "/^(.*)_lesser_than$/";
   public const SearchRegex = "/^(.*)_search$/";
 
-  public static function genericTryCatchFactory($clojure)
+  public static function genericTryCatchFactory(Closure $closure)
   {
-    return function (Request $req) use ($clojure) {
+    return function (Request $req) use ($closure) {
       try {
-        return $clojure($req);
+        return $closure($req);
       } catch (GenericAppException $e) {
         $e->performActions();
 
