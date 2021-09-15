@@ -155,7 +155,8 @@ return [
         'email' => 'e-mail',
         'password' => 'senha',
         'name' => 'nome',
-        'abbreviation' => 'sigla'
+        'abbreviation' => 'sigla',
+        'stateId' => 'id_estado',
     ],
 
 ];
