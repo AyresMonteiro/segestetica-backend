@@ -36,8 +36,8 @@ class State extends Model
     public static function getStoreValidator(array $data)
     {
         return Validator::make($data, [
-            'name' => ['required', 'string'],
-            'abbreviation' => ['required', 'string'],
+            'name' => ['required', 'string', 'unique:states'],
+            'abbreviation' => ['required', 'string', 'unique:states'],
         ]);
     }
 
@@ -52,8 +52,8 @@ class State extends Model
     public static function getUpdateValidator(array $data)
     {
         return Validator::make($data, [
-            'name' => ['required_without_all:abbreviation', 'string'],
-            'abbreviation' => ['required_without_all:name', 'string'],
+            'name' => ['required_without_all:abbreviation', 'string', 'unique:states'],
+            'abbreviation' => ['required_without_all:name', 'string', 'unique:states'],
         ]);
     }
 

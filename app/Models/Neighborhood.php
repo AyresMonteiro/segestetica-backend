@@ -34,7 +34,7 @@ class Neighborhood extends Model
     public static function getStoreValidator(array $data)
     {
         return Validator::make($data, [
-            'name' => ['required', 'string'],
+            'name' => ['required', 'string', 'unique:neighborhoods'],
             'cityId' => ['required', 'integer', 'exists:cities,id'],
         ]);
     }
@@ -50,7 +50,7 @@ class Neighborhood extends Model
     public static function getUpdateValidator(array $data)
     {
         return Validator::make($data, [
-            'name' => ['required_without_all:cityId', 'string'],
+            'name' => ['required_without_all:cityId', 'string', 'unique:neighborhoods'],
             'cityId' => ['required_without_all:name', 'integer', 'exists:cities,id'],
         ]);
     }

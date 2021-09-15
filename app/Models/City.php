@@ -34,7 +34,7 @@ class City extends Model
     public static function getStoreValidator(array $data)
     {
         return Validator::make($data, [
-            'name' => ['required', 'string'],
+            'name' => ['required', 'string', 'unique:cities'],
             'stateId' => ['required', 'integer', 'exists:states,id'],
         ]);
     }
@@ -50,7 +50,7 @@ class City extends Model
     public static function getUpdateValidator(array $data)
     {
         return Validator::make($data, [
-            'name' => ['required_without_all:stateId', 'string'],
+            'name' => ['required_without_all:stateId', 'string', 'unique:cities'],
             'stateId' => ['required_without_all:name', 'integer', 'exists:states,id'],
         ]);
     }
