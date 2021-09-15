@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\{
+    CityController,
     StateController,
 };
 use App\Http\Helpers\GenericHelper;
@@ -30,3 +31,10 @@ Route::group(['prefix' => 'states'], function () {
     Route::delete('/{id}', GenericHelper::genericTryCatchFactory(StateController::destroy()));
 });
 
+Route::group(['prefix' => 'cities'], function () {
+    Route::get('/', GenericHelper::genericTryCatchFactory(CityController::index()));
+    Route::get('/{id}', GenericHelper::genericTryCatchFactory(CityController::show()));
+    Route::post('/', GenericHelper::genericTryCatchFactory(CityController::store()));
+    Route::put('/{id}', GenericHelper::genericTryCatchFactory(CityController::update()));
+    Route::delete('/{id}', GenericHelper::genericTryCatchFactory(CityController::destroy()));
+});
