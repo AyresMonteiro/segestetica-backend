@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\{
     CityController,
+    NeighborhoodController,
     StateController,
 };
 use App\Http\Helpers\GenericHelper;
@@ -37,4 +38,12 @@ Route::group(['prefix' => 'cities'], function () {
     Route::post('/', GenericHelper::genericTryCatchFactory(CityController::store()));
     Route::put('/{id}', GenericHelper::genericTryCatchFactory(CityController::update()));
     Route::delete('/{id}', GenericHelper::genericTryCatchFactory(CityController::destroy()));
+});
+
+Route::group(['prefix' => 'neighborhoods'], function () {
+    Route::get('/', GenericHelper::genericTryCatchFactory(NeighborhoodController::index()));
+    Route::get('/{id}', GenericHelper::genericTryCatchFactory(NeighborhoodController::show()));
+    Route::post('/', GenericHelper::genericTryCatchFactory(NeighborhoodController::store()));
+    Route::put('/{id}', GenericHelper::genericTryCatchFactory(NeighborhoodController::update()));
+    Route::delete('/{id}', GenericHelper::genericTryCatchFactory(NeighborhoodController::destroy()));
 });
