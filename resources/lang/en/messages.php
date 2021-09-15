@@ -6,4 +6,5 @@ return [
   'implementation_error' => 'Implementation error.',
   'not_found_error' => 'Item not found.',
   'delete_error' => 'Error on delete.',
+  'up_to_date_error' => 'Everything is up-to-date.',
 ];
