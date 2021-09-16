@@ -10,6 +10,7 @@ use Exception;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator as FacadesValidator;
 
@@ -203,5 +204,10 @@ class GenericHelper
   public static function generateUUIDString()
   {
     return Str::uuid()->toString();
+  }
+
+  public static function handleUploadImage($image, $dir = 'images')
+  {
+    return Storage::putFileAs($dir, $image, self::generateUUIDString() . '.' . $image->extension());
   }
 }
