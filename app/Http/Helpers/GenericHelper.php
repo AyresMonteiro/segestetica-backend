@@ -10,6 +10,7 @@ use Exception;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator as FacadesValidator;
 
 class GenericHelper
@@ -197,5 +198,10 @@ class GenericHelper
     }
 
     return $builderInstance;
+  }
+
+  public static function generateUUIDString()
+  {
+    return Str::uuid()->toString();
   }
 }
