@@ -210,4 +210,9 @@ class GenericHelper
   {
     return Storage::putFileAs($dir, $image, self::generateUUIDString() . '.' . $image->extension());
   }
+
+  public static function handleDeleteImage($path)
+  {
+    return Storage::delete($path);
+  }
 }
