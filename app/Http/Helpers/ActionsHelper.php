@@ -10,4 +10,11 @@ class ActionsHelper
       $model->delete();
     };
   }
+
+  public static function generateDeleteImageAction($path)
+  {
+    return function () use ($path) {
+      GenericHelper::handleDeleteImage($path);
+    };
+  }
 }
