@@ -7,4 +7,11 @@ return [
   'not_found_error' => 'Item não encontrado.',
   'delete_error' => 'Erro na exclusão.',
   'up_to_date_error' => 'Dados já estão atualizados.',
+  'confirm_email' => 'Um e-mail de confirmação de cadastro foi enviado ao endereço :email_address! Consulte sua caixa de entrada e/ou spam.',
+  'send_id' => 'Envie um identificador!',
+  'send_valid_id' => 'Envie um identificador válido!',
+  'search_value_validation_fail' => 'A validação de um dos valores de busca falhou.',
+  'compare_value_validation_fail' => 'A validação de um dos valores de comparação falhou.',
+  'mail_not_set' => 'Entregador de e-mails não definido.',
+  'mail_error' => 'Erro de E-mail: :error.',
 ];
