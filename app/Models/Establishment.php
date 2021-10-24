@@ -94,4 +94,12 @@ class Establishment extends Model
             'password' => ['required_without_all:name,email,photo,streetId,addressNumber', 'string'],
         ]);
     }
+
+    public static function getLoginRequestValidator(array $data)
+    {
+        return Validator::make($data, [
+            'email' => ['required', 'string', 'email'],
+            'password' => ['required', 'string'],
+        ]);
+    }
 }
