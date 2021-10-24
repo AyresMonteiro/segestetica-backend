@@ -48,9 +48,9 @@ class GenericHelper
   public static function generateIdMessages(string $paramName = 'uuid')
   {
     return [
-      $paramName . '.required' => 'Envie um identificador!',
-      $paramName . '.regex' => 'Envie um identificador válido!',
-      $paramName . '.integer' => 'Envie um identificador válido!',
+      $paramName . '.required' => __('messages.send_id'),
+      $paramName . '.regex' => __('messages.send_valid_id'),
+      $paramName . '.integer' => __('messages.send_valid_id'),
     ];
   }
 
@@ -158,7 +158,7 @@ class GenericHelper
       return $builderInstance->where($attributeName, "like", '%' . $searchValue . '%');
     }
 
-    throw new GenericAppException(['Your search value validation has failed.', 500]);
+    throw new GenericAppException([__('messages.search_value_validation_fail'), 500]);
   }
 
   public static function handleCompareValue(
@@ -176,7 +176,7 @@ class GenericHelper
       return self::handleLesserValue($builderInstance, $attributeName, $compareValue);
     }
 
-    throw new GenericAppException(['Your compare value validation has failed.', 500]);
+    throw new GenericAppException([__('messages.compare_value_validation_fail'), 500]);
   }
 
   public static function handleCompareValues(
