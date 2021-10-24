@@ -31,6 +31,8 @@ class Establishment extends Model
     protected $primaryKey = 'uuid';
     public $incrementing = false;
 
+    public const pathRegex = "/^images[\/].*$/";
+
     public static function getQueryValidator(array $data)
     {
         return Validator::make($data, [
@@ -50,7 +52,7 @@ class Establishment extends Model
             'uuid' => ['required', 'uuid', 'unique:establishments'],
             'name' => ['required', 'string'],
             'email' => ['required', 'string', 'email', 'unique:establishments'],
-            'photoUrl' => ['nullable', 'string', 'url', 'unique:establishments'],
+            'photoUrl' => ['nullable', 'string', 'regex:' . self::pathRegex, 'unique:establishments'],
             'streetId' => ['required', 'integer', 'exists:streets,id'],
             'addressNumber' => ['required', 'string', 'alpha_num'],
             'passwordHash' => ['required', 'string'],
@@ -74,7 +76,7 @@ class Establishment extends Model
         return Validator::make($data, [
             'name' => ['required_without_all:email,photoUrl,streetId,addressNumber,passwordHash', 'string'],
             'email' => ['required_without_all:name,photoUrl,streetId,addressNumber,passwordHash', 'string', 'email'],
-            'photoUrl' => ['required_without_all:name,email,streetId,addressNumber,passwordHash', 'string', 'url'],
+            'photoUrl' => ['required_without_all:name,email,streetId,addressNumber,passwordHash', 'string', 'regex:' . self::pathRegex],
             'streetId' => ['required_without_all:name,email,photoUrl,addressNumber,passwordHash', 'integer'],
             'addressNumber' => ['required_without_all:name,email,photoUrl,streetId,passwordHash', 'string', 'alpha_num'],
             'passwordHash' => ['required_without_all:name,email,photoUrl,streetId,addressNumber', 'string'],
