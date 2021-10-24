@@ -14,4 +14,6 @@ return [
   'compare_value_validation_fail' => 'A validação de um dos valores de comparação falhou.',
   'mail_not_set' => 'Entregador de e-mails não definido.',
   'mail_error' => 'Erro de E-mail: :error.',
+  'mail_confirmation_title' => 'Confirme seu e-mail.',
+  'establishment_not_found' => 'Estabelecimento não encontrado.',
 ];

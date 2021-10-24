@@ -14,4 +14,6 @@ return [
   'compare_value_validation_fail' => 'Your compare value validation has failed.',
   'mail_not_set' => 'Mailer not set.',
   'mail_error' => 'Mail Error: :error.',
+  'mail_confirmation_title' => 'Confirm your email.',
+  'establishment_not_found' => 'Establishment not found.',
 ];
