@@ -3,14 +3,16 @@
 namespace App\Http\Helpers;
 
 use App\Exceptions\GenericAppException;
-use App\Http\Handlers\ErrorResponseHandler;
-use App\Http\Handlers\ValidatorHandler;
+use App\Http\Handlers\{
+  ErrorResponseHandler,
+  FileHandler,
+  ValidatorHandler
+};
 use Closure;
 use Exception;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator as FacadesValidator;
 
@@ -208,11 +210,11 @@ class GenericHelper
 
   public static function handleUploadImage($image, $dir = 'images')
   {
-    return Storage::putFileAs($dir, $image, self::generateUUIDString() . '.' . $image->extension());
+    return FileHandler::saveAs($image, $dir, self::generateUUIDString() . '.' . $image->extension());
   }
 
-  public static function handleDeleteImage($path)
+  public static function handleDeleteImage($filepath)
   {
-    return Storage::delete($path);
+    return FileHandler::delete($filepath);
   }
 }
