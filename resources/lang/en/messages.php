@@ -16,4 +16,5 @@ return [
   'mail_error' => 'Mail Error: :error.',
   'mail_confirmation_title' => 'Confirm your email.',
   'establishment_not_found' => 'Establishment not found.',
+  'can_not' => "You do not have permission.",
 ];
