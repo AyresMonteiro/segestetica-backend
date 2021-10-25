@@ -11,6 +11,7 @@ return [
   'send_id' => 'Send an ID!',
   'send_valid_id' => 'Send a valid ID!',
   'search_value_validation_fail' => 'Your search value validation has failed.',
+  'different_value_validation_fail' => 'Your different value validation has failed.',
   'compare_value_validation_fail' => 'Your compare value validation has failed.',
   'mail_not_set' => 'Mailer not set.',
   'mail_error' => 'Mail Error: :error.',
