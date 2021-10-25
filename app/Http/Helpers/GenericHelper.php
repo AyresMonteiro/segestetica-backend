@@ -21,6 +21,7 @@ class GenericHelper
   public const UUIDRegex = "/^.{8}-.{4}-.{4}-.{4}-.{12}$/";
   public const GreaterThanRegex = "/^(.*)_greater_than$/";
   public const LesserThanRegex = "/^(.*)_lesser_than$/";
+  public const DifferentThanRegex = "/^(.*)_different_than$/";
   public const SearchRegex = "/^(.*)_search$/";
 
   public static function genericTryCatchFactory(Closure $closure)
@@ -95,6 +96,11 @@ class GenericHelper
     return preg_match(self::SearchRegex, $key);
   }
 
+  public static function isDifferentValue(string $key)
+  {
+    return preg_match(self::DifferentThanRegex, $key);
+  }
+
   public static function getCompareValues(array $data)
   {
     $compareValues = [];
@@ -121,12 +127,25 @@ class GenericHelper
     return $searchValues;
   }
 
+  public static function getDifferentValues(array $data)
+  {
+    $differentValues = [];
+
+    foreach ($data as $key => $value) {
+      if (self::isDifferentValue($key)) {
+        $differentValues[$key] = $value;
+      }
+    }
+
+    return $differentValues;
+  }
+
   public static function getFixedValues(array $data)
   {
     $fixedValues = [];
 
     foreach ($data as $key => $value) {
-      if (!self::isCompareValue($key) && !self::isSearchValue($key)) {
+      if (!self::isCompareValue($key) && !self::isSearchValue($key) && !self::isDifferentValue($key)) {
         $fixedValues[$key] = $value;
       }
     }
@@ -161,6 +180,19 @@ class GenericHelper
     }
 
     throw new GenericAppException([__('messages.search_value_validation_fail'), 500]);
+  }
+
+  public static function handleDifferentValue(
+    Builder $builderInstance,
+    $differentValueKey,
+    $differentValue
+  ) {
+    if (preg_match(self::DifferentThanRegex, $differentValueKey)) {
+      $attributeName = preg_replace(self::DifferentThanRegex, "$1", $differentValueKey);
+      return $builderInstance->where($attributeName, "!=", $differentValue);
+    }
+
+    throw new GenericAppException([__('messages.different_value_validation_fail'), 500]);
   }
 
   public static function handleCompareValue(
@@ -198,6 +230,17 @@ class GenericHelper
   ) {
     foreach ($searchValues as $compareKey => $searchValue) {
       $builderInstance = self::handleSearchValue($builderInstance, $compareKey, $searchValue);
+    }
+
+    return $builderInstance;
+  }
+
+  public static function handleDifferentValues(
+    Builder $builderInstance,
+    array $differentValues
+  ) {
+    foreach ($differentValues as $compareKey => $differentValue) {
+      $builderInstance = self::handleDifferentValue($builderInstance, $compareKey, $differentValue);
     }
 
     return $builderInstance;
