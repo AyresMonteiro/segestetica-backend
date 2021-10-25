@@ -4,10 +4,12 @@ namespace App\Http\Helpers;
 
 use App\Exceptions\GenericAppException;
 use App\Http\Handlers\{
+  AuthHandler,
   ErrorResponseHandler,
   FileHandler,
   ValidatorHandler
 };
+use App\Http\Handlers\Auth\SanctumAuthSystem;
 use Closure;
 use Exception;
 use Illuminate\Contracts\Validation\Validator;
@@ -37,6 +39,13 @@ class GenericHelper
         return ErrorResponseHandler::defaultError();
       }
     };
+  }
+
+  public static function getDefaultAuthHandler()
+  {
+    $defaultAuthSystem = new SanctumAuthSystem();
+
+    return new AuthHandler($defaultAuthSystem);
   }
 
   public static function validate(Validator $validator)
