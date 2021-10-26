@@ -7,9 +7,11 @@ use App\Http\Handlers\{
   AuthHandler,
   ErrorResponseHandler,
   FileHandler,
+  MailHandler,
   ValidatorHandler
 };
 use App\Http\Handlers\Auth\SanctumAuthSystem;
+use App\Http\Handlers\Mail\GmailMailer;
 use Closure;
 use Exception;
 use Illuminate\Contracts\Validation\Validator;
@@ -46,6 +48,13 @@ class GenericHelper
     $defaultAuthSystem = new SanctumAuthSystem();
 
     return new AuthHandler($defaultAuthSystem);
+  }
+
+  public static function getDefaultMailHandler()
+  {
+    $defaultMailer = new GmailMailer();
+
+    return new MailHandler($defaultMailer->getMailer());
   }
 
   public static function validate(Validator $validator)
