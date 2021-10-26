@@ -18,4 +18,5 @@ return [
   'mail_confirmation_title' => 'Confirme seu e-mail.',
   'establishment_not_found' => 'Estabelecimento não encontrado.',
   'can_not' => "Você não tem permissão.",
+  'email_confirmed' => 'Seu e-mail foi confirmado.',
 ];
