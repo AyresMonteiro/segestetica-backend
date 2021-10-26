@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\{
     CityController,
+    EstablishmentController,
     NeighborhoodController,
     StateController,
     StreetController,
@@ -55,4 +56,14 @@ Route::group(['prefix' => 'streets'], function () {
     Route::post('/', GenericHelper::genericTryCatchFactory(StreetController::store()));
     Route::put('/{id}', GenericHelper::genericTryCatchFactory(StreetController::update()));
     Route::delete('/{id}', GenericHelper::genericTryCatchFactory(StreetController::destroy()));
+});
+
+Route::group(['prefix' => 'establishments'], function () {
+    Route::get('/', GenericHelper::genericTryCatchFactory(EstablishmentController::index()));
+    Route::get('/confirm', GenericHelper::genericTryCatchFactory(EstablishmentController::confirmEmail()));
+    Route::get('/{uuid}', GenericHelper::genericTryCatchFactory(EstablishmentController::show()));
+    Route::post('/', GenericHelper::genericTryCatchFactory(EstablishmentController::store()));
+    Route::post('/login', GenericHelper::genericTryCatchFactory(EstablishmentController::login()));
+    Route::put('/{uuid}', GenericHelper::genericTryCatchFactory(EstablishmentController::update()));
+    Route::delete('/{uuid}', GenericHelper::genericTryCatchFactory(EstablishmentController::destroy()));
 });
