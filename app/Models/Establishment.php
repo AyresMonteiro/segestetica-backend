@@ -33,6 +33,7 @@ class Establishment extends Model
     public $incrementing = false;
 
     public const pathRegex = "/^images[\/].*$/";
+    public const tokenRegex = "/^\d+[|][a-zA-Z0-9]+$/";
 
     public static function getQueryValidator(array $data)
     {
@@ -101,6 +102,13 @@ class Establishment extends Model
         return Validator::make($data, [
             'email' => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
+        ]);
+    }
+
+    public static function getMailConfirmationValidator(array $data)
+    {
+        return Validator::make($data, [
+            'token' => ['required', 'string', 'regex:' . self::tokenRegex],
         ]);
     }
 }
