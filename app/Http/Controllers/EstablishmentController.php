@@ -2,12 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Exceptions\GenericAppException;
 use App\Http\Handlers\DefaultResponseHandler;
 use App\Http\Helpers\EstablishmentHelper;
-use App\Http\Helpers\GenericHelper;
-use App\Models\Establishment;
-use Carbon\Carbon;
+use App\Jobs\SendConfirmationMail;
 use Closure;
 use Illuminate\Http\Request;
 
@@ -41,7 +38,7 @@ class EstablishmentController extends Controller
             $data = EstablishmentHelper::getStoreRequestData($req);
             $establishment = EstablishmentHelper::handleStoreRequest($data);
 
-            EstablishmentHelper::sendConfirmationMail($establishment);
+            SendConfirmationMail::dispatch($establishment);
 
             return DefaultResponseHandler::customResponse(__("messages.confirm_email", [
                 'email_address' => $establishment->email
