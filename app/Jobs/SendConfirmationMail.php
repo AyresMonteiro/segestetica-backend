@@ -66,7 +66,7 @@ class SendConfirmationMail implements ShouldQueue
             ['establishment:confirm-mail'],
         )->plainTextToken;
 
-        $url = "http://" . env('APP_URL') . "/api/establishments/confirm?token=" . urlencode($token);
+        $url = env('APP_URL') . "/api/establishments/confirm?token=" . urlencode($token);
 
         $emailData = new EmailData($establishment->name, $establishment->email);
 
