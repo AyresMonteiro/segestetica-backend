@@ -5,10 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Validator;
+use Laravel\Sanctum\HasApiTokens;
 
 class Establishment extends Model
 {
-    use HasFactory;
+    use HasFactory, HasApiTokens;
 
     protected $fillable = [
         'uuid',
@@ -31,6 +32,9 @@ class Establishment extends Model
     protected $primaryKey = 'uuid';
     public $incrementing = false;
 
+    public const pathRegex = "/^images[\/].*$/";
+    public const tokenRegex = "/^\d+[|][a-zA-Z0-9]+$/";
+
     public static function getQueryValidator(array $data)
     {
         return Validator::make($data, [
@@ -50,7 +54,7 @@ class Establishment extends Model
             'uuid' => ['required', 'uuid', 'unique:establishments'],
             'name' => ['required', 'string'],
             'email' => ['required', 'string', 'email', 'unique:establishments'],
-            'photoUrl' => ['nullable', 'string', 'url', 'unique:establishments'],
+            'photoUrl' => ['nullable', 'string', 'regex:' . self::pathRegex, 'unique:establishments'],
             'streetId' => ['required', 'integer', 'exists:streets,id'],
             'addressNumber' => ['required', 'string', 'alpha_num'],
             'passwordHash' => ['required', 'string'],
@@ -74,7 +78,7 @@ class Establishment extends Model
         return Validator::make($data, [
             'name' => ['required_without_all:email,photoUrl,streetId,addressNumber,passwordHash', 'string'],
             'email' => ['required_without_all:name,photoUrl,streetId,addressNumber,passwordHash', 'string', 'email'],
-            'photoUrl' => ['required_without_all:name,email,streetId,addressNumber,passwordHash', 'string', 'url'],
+            'photoUrl' => ['required_without_all:name,email,streetId,addressNumber,passwordHash', 'string', 'regex:' . self::pathRegex],
             'streetId' => ['required_without_all:name,email,photoUrl,addressNumber,passwordHash', 'integer'],
             'addressNumber' => ['required_without_all:name,email,photoUrl,streetId,passwordHash', 'string', 'alpha_num'],
             'passwordHash' => ['required_without_all:name,email,photoUrl,streetId,addressNumber', 'string'],
@@ -90,6 +94,21 @@ class Establishment extends Model
             'streetId' => ['required_without_all:name,email,photo,addressNumber,password', 'integer'],
             'addressNumber' => ['required_without_all:name,email,photo,streetId,password', 'string', 'alpha_num'],
             'password' => ['required_without_all:name,email,photo,streetId,addressNumber', 'string'],
+        ]);
+    }
+
+    public static function getLoginRequestValidator(array $data)
+    {
+        return Validator::make($data, [
+            'email' => ['required', 'string', 'email'],
+            'password' => ['required', 'string'],
+        ]);
+    }
+
+    public static function getMailConfirmationValidator(array $data)
+    {
+        return Validator::make($data, [
+            'token' => ['required', 'string', 'regex:' . self::tokenRegex],
         ]);
     }
 }

@@ -3,14 +3,20 @@
 namespace App\Http\Helpers;
 
 use App\Exceptions\GenericAppException;
-use App\Http\Handlers\ErrorResponseHandler;
-use App\Http\Handlers\ValidatorHandler;
+use App\Http\Handlers\{
+  AuthHandler,
+  ErrorResponseHandler,
+  FileHandler,
+  MailHandler,
+  ValidatorHandler
+};
+use App\Http\Handlers\Auth\SanctumAuthSystem;
+use App\Http\Handlers\Mail\GmailMailer;
 use Closure;
 use Exception;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator as FacadesValidator;
 
@@ -19,6 +25,7 @@ class GenericHelper
   public const UUIDRegex = "/^.{8}-.{4}-.{4}-.{4}-.{12}$/";
   public const GreaterThanRegex = "/^(.*)_greater_than$/";
   public const LesserThanRegex = "/^(.*)_lesser_than$/";
+  public const DifferentThanRegex = "/^(.*)_different_than$/";
   public const SearchRegex = "/^(.*)_search$/";
 
   public static function genericTryCatchFactory(Closure $closure)
@@ -36,6 +43,20 @@ class GenericHelper
     };
   }
 
+  public static function getDefaultAuthHandler()
+  {
+    $defaultAuthSystem = new SanctumAuthSystem();
+
+    return new AuthHandler($defaultAuthSystem);
+  }
+
+  public static function getDefaultMailHandler()
+  {
+    $defaultMailer = new GmailMailer();
+
+    return new MailHandler($defaultMailer->getMailer());
+  }
+
   public static function validate(Validator $validator)
   {
     $errors = ValidatorHandler::validate($validator);
@@ -48,9 +69,9 @@ class GenericHelper
   public static function generateIdMessages(string $paramName = 'uuid')
   {
     return [
-      $paramName . '.required' => 'Envie um identificador!',
-      $paramName . '.regex' => 'Envie um identificador válido!',
-      $paramName . '.integer' => 'Envie um identificador válido!',
+      $paramName . '.required' => __('messages.send_id'),
+      $paramName . '.regex' => __('messages.send_valid_id'),
+      $paramName . '.integer' => __('messages.send_valid_id'),
     ];
   }
 
@@ -93,6 +114,11 @@ class GenericHelper
     return preg_match(self::SearchRegex, $key);
   }
 
+  public static function isDifferentValue(string $key)
+  {
+    return preg_match(self::DifferentThanRegex, $key);
+  }
+
   public static function getCompareValues(array $data)
   {
     $compareValues = [];
@@ -119,12 +145,25 @@ class GenericHelper
     return $searchValues;
   }
 
+  public static function getDifferentValues(array $data)
+  {
+    $differentValues = [];
+
+    foreach ($data as $key => $value) {
+      if (self::isDifferentValue($key)) {
+        $differentValues[$key] = $value;
+      }
+    }
+
+    return $differentValues;
+  }
+
   public static function getFixedValues(array $data)
   {
     $fixedValues = [];
 
     foreach ($data as $key => $value) {
-      if (!self::isCompareValue($key) && !self::isSearchValue($key)) {
+      if (!self::isCompareValue($key) && !self::isSearchValue($key) && !self::isDifferentValue($key)) {
         $fixedValues[$key] = $value;
       }
     }
@@ -158,7 +197,20 @@ class GenericHelper
       return $builderInstance->where($attributeName, "like", '%' . $searchValue . '%');
     }
 
-    throw new GenericAppException(['Your search value validation has failed.', 500]);
+    throw new GenericAppException([__('messages.search_value_validation_fail'), 500]);
+  }
+
+  public static function handleDifferentValue(
+    Builder $builderInstance,
+    $differentValueKey,
+    $differentValue
+  ) {
+    if (preg_match(self::DifferentThanRegex, $differentValueKey)) {
+      $attributeName = preg_replace(self::DifferentThanRegex, "$1", $differentValueKey);
+      return $builderInstance->where($attributeName, "!=", $differentValue);
+    }
+
+    throw new GenericAppException([__('messages.different_value_validation_fail'), 500]);
   }
 
   public static function handleCompareValue(
@@ -176,7 +228,7 @@ class GenericHelper
       return self::handleLesserValue($builderInstance, $attributeName, $compareValue);
     }
 
-    throw new GenericAppException(['Your compare value validation has failed.', 500]);
+    throw new GenericAppException([__('messages.compare_value_validation_fail'), 500]);
   }
 
   public static function handleCompareValues(
@@ -201,6 +253,17 @@ class GenericHelper
     return $builderInstance;
   }
 
+  public static function handleDifferentValues(
+    Builder $builderInstance,
+    array $differentValues
+  ) {
+    foreach ($differentValues as $compareKey => $differentValue) {
+      $builderInstance = self::handleDifferentValue($builderInstance, $compareKey, $differentValue);
+    }
+
+    return $builderInstance;
+  }
+
   public static function generateUUIDString()
   {
     return Str::uuid()->toString();
@@ -208,11 +271,11 @@ class GenericHelper
 
   public static function handleUploadImage($image, $dir = 'images')
   {
-    return Storage::putFileAs($dir, $image, self::generateUUIDString() . '.' . $image->extension());
+    return FileHandler::saveAs($image, $dir, self::generateUUIDString() . '.' . $image->extension());
   }
 
-  public static function handleDeleteImage($path)
+  public static function handleDeleteImage($filepath)
   {
-    return Storage::delete($path);
+    return FileHandler::delete($filepath);
   }
 }

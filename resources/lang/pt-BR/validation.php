@@ -158,6 +158,10 @@ return [
         'abbreviation' => 'sigla',
         'stateId' => 'id_estado',
         'cityId' => 'id_cidade',
+        'neighborhoodId' => 'id_bairro',
+        'streetId' => 'id_rua',
+        'addressNumber' => "numero_endereco",
+        'passwordHash' => 'senha_ofuscada',
     ],
 
 ];
