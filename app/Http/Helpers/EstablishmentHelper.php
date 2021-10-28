@@ -283,22 +283,4 @@ class EstablishmentHelper
       ['establishment:general'],
     )->plainTextToken;
   }
-
-  public static function sendConfirmationMail(Establishment $establishment)
-  {
-    $mailHandler = GenericHelper::getDefaultMailHandler();
-
-    $token = $establishment->createToken(
-      'confirm-token',
-      ['establishment:confirm-mail'],
-    )->plainTextToken;
-
-    $url = "http://" . env('APP_URL') . "/api/establishments/confirm?token=" . urlencode($token);
-
-    $mailHandler->sendView('confirm_establishment_mail', [
-      'url' => $url,
-    ], __('messages.mail_confirmation_title'), [
-      new EmailData($establishment->name, $establishment->email),
-    ]);
-  }
 }
