@@ -5,10 +5,8 @@ namespace App\Jobs;
 use App\Exceptions\GenericAppException;
 use App\Http\Handlers\Mail\EmailData;
 use App\Http\Handlers\MailHandler;
-use App\Http\Helpers\GenericHelper;
 use App\Models\{Establishment, User};
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldBeUnique;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
@@ -47,15 +45,19 @@ class SendConfirmationMail implements ShouldQueue
             throw new GenericAppException([__('messages.system_error')], 500);
         }
 
+        $viewData = [
+            'url' => $data['url'],
+        ];
+
+        $emailsToSendData = [
+            $data['emailData'],
+        ];
+
         $mailHandler->sendView(
             $data['emailType'],
-            [
-                'url' => $data['url'],
-            ],
+            $viewData,
             __('messages.mail_confirmation_title'),
-            [
-                $data['emailData'],
-            ],
+            $emailsToSendData,
         );
     }
 
@@ -73,7 +75,6 @@ class SendConfirmationMail implements ShouldQueue
         $emailType = 'confirm_establishment_mail';
 
         return [
-            'token' => $token,
             'url' => $url,
             'emailData' => $emailData,
             'emailType' => $emailType,

@@ -11,5 +11,5 @@ interface IMailer
    * 
    * @return PHPMailer
    */
-  public function getMailer();
+  public static function getMailer(): PHPMailer;
 }

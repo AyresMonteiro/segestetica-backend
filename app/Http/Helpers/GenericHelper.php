@@ -52,9 +52,9 @@ class GenericHelper
 
   public static function getDefaultMailHandler()
   {
-    $defaultMailer = new GmailMailer();
+    $defaultMailer = GmailMailer::getMailer();
 
-    return new MailHandler($defaultMailer->getMailer());
+    return new MailHandler($defaultMailer);
   }
 
   public static function validate(Validator $validator)

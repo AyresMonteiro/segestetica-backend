@@ -9,35 +9,25 @@ use PHPMailer\PHPMailer\SMTP;
 
 class GmailMailer implements IMailer
 {
-  private $mail;
+  private static PHPMailer $mail;
 
-  public function __construct()
+  private static function setup(): void
   {
-    $this->mail = new PHPMailer();
+    self::$mail = new PHPMailer();
 
-    // Setting: Use SMTP
-    $this->mail->isSMTP();
+    self::$mail->isSMTP();
 
-    // Setting: Log errors
-    //    -> DEBUG_OFF: disable
-    //    -> DEBUG_CLIENT: client errors only
-    //    -> DEBUG_SERVER: both client and server errors
-    $this->mail->SMTPDebug = SMTP::DEBUG_OFF;
+    self::$mail->SMTPDebug = SMTP::DEBUG_OFF;
 
-    $this->mail->Host = env('MAIL_HOST');
+    self::$mail->Host = env('MAIL_HOST');
 
-    $this->mail->Port = env('MAIL_PORT');
+    self::$mail->Port = env('MAIL_PORT');
 
-    // Setting: Security protocol
-    //  -> If using SMTPS: ssl
-    //  -> If using STARTTLS: tls
-    $this->mail->SMTPSecure = env('MAIL_ENCRYPTION');
+    self::$mail->SMTPSecure = env('MAIL_ENCRYPTION');
 
-    // Setting: Use authentication
-    $this->mail->SMTPAuth = true;
+    self::$mail->SMTPAuth = true;
 
-    // Setting: Set Authentication Type
-    $this->mail->AuthType = 'XOAUTH2';
+    self::$mail->AuthType = 'XOAUTH2';
 
     $clientId = env('GOOGLE_OAUTH_CLIENT_ID');
     $clientSecret = env('GOOGLE_OAUTH_CLIENT_SECRET');
@@ -50,7 +40,7 @@ class GmailMailer implements IMailer
       'clientSecret' => $clientSecret
     ]);
 
-    $this->mail->setOAuth(new OAuth([
+    self::$mail->setOAuth(new OAuth([
       'provider' => $provider,
       'clientId' => $clientId,
       'clientSecret' => $clientSecret,
@@ -58,11 +48,15 @@ class GmailMailer implements IMailer
       'userName' => $email,
     ]));
 
-    $this->mail->setFrom($email, $name);
+    self::$mail->setFrom($email, $name);
   }
 
-  public function getMailer()
+  public static function getMailer(): PHPMailer
   {
-    return $this->mail;
+    if (!isset(self::$mail)) {
+      self::setup();
+    }
+
+    return self::$mail;
   }
 }
