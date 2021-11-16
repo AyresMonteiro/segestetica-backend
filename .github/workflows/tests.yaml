@@ -1,0 +1,20 @@
+name: Test application
+
+on: [push]
+
+jobs:
+  phpunit-tests:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+      with:
+        fetch-depth: 1
+        
+    - name: Installing composer dependencies
+      run: |
+        composer install --no-scripts
+
+    - name: Testing application
+      run: vendor/bin/phpunit tests/
+
+
