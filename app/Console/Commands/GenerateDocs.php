@@ -37,12 +37,17 @@ class GenerateDocs extends Command
      */
     public function handle()
     {
+        $openapi_path = __DIR__ . '/../../../vendor/bin/openapi';
+        $swagger_dir = __DIR__ . '/../../../public/swagger';
+
+        $search_paths = [
+            __DIR__ . '/../../../routes/',
+            __DIR__ . '/../../../app/Http/Controllers',
+            __DIR__ . '/../../../app/Models',
+        ];
+
         $scripts = [
-            'Linux' =>
-            'php ' . __DIR__ .
-                '/../../../vendor/bin/openapi ' .
-                '--output ' . __DIR__ . '/../../../public/swagger ' .
-                __DIR__ . '/../../../routes/',
+            'Linux' => 'php ' . $openapi_path . ' ' . implode(' ', $search_paths) . ' --output ' . $swagger_dir,
         ];
 
         $fallback = 'php -r "echo \"not implemented yet\n\";"';
