@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Http\Handlers\LogHandler;
 use Illuminate\Console\Command;
 
 class GenerateDocs extends Command
@@ -11,7 +12,7 @@ class GenerateDocs extends Command
      *
      * @var string
      */
-    protected $signature = 'generate:docs';
+    protected $signature = 'generate:docs {--c|continuous} {--sleepTime=}';
 
     /**
      * The console command description.
@@ -30,12 +31,7 @@ class GenerateDocs extends Command
         parent::__construct();
     }
 
-    /**
-     * Execute the console command.
-     *
-     * @return int
-     */
-    public function handle()
+    public function run_command()
     {
         $openapi_path = __DIR__ . '/../../../vendor/bin/openapi';
         $swagger_dir = __DIR__ . '/../../../public/swagger';
@@ -59,5 +55,21 @@ class GenerateDocs extends Command
             system($fallback);
             return -1;
         }
+    }
+
+    /**
+     * Execute the console command.
+     *
+     * @return int
+     */
+    public function handle()
+    {
+        do {
+            $sleepTime = $this->option('continuous') != null ? $this->option('continuous') : 2;
+
+            $this->run_command();
+            echo now() . "\tCompiled.\n";
+            sleep($sleepTime);
+        } while ($this->option('continuous'));
     }
 }
