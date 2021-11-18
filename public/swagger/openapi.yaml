@@ -1,0 +1,528 @@
+openapi: 3.0.0
+info:
+  title: 'SegEstética API'
+  contact:
+    email: ayresmonteiro52@gmail.com
+  version: 1.0.0
+paths:
+  /api/cities:
+    get:
+      tags:
+        - cities
+      parameters:
+        -
+          name: cityNameSearch
+          in: query
+          description: 'A string to be searched inside name attribute'
+          required: false
+          schema:
+            type: string
+        -
+          name: cityStateId
+          in: query
+          description: 'City''s State Id Foreign'
+          required: false
+          schema:
+            type: integer
+        -
+          name: cityCreatedAtGreaterThan
+          in: query
+          description: 'Specifies cities created after a given date'
+          required: false
+          schema:
+            type: string
+            format: date-time
+        -
+          name: cityCreatedAtLesserThan
+          in: query
+          description: 'Specifies cities created before a given date'
+          required: false
+          schema:
+            type: string
+            format: date-time
+        -
+          name: cityUpdatedAtGreaterThan
+          in: query
+          description: 'Specifies cities last updated after a given date'
+          required: false
+          schema:
+            type: string
+            format: date-time
+        -
+          name: cityUpdatedAtLesserThan
+          in: query
+          description: 'Specifies cities last updated before a given date'
+          required: false
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: 'Cities successfully listed'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/City'
+        '400':
+          description: 'Request error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  '/api/cities/{id}':
+    get:
+      tags:
+        - cities
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'City Identifier'
+          required: true
+          schema:
+            type: integer
+            format: bigint
+      responses:
+        '200':
+          description: 'City has been found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/City'
+        '400':
+          description: 'Request error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: 'Not found error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/neighborhoods/:
+    get:
+      tags:
+        - neighborhoods
+      responses:
+        '200':
+          description: 'List all neighborhoods'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Neighborhood'
+        '400':
+          description: 'Request error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  '/api/neighborhoods/{id}':
+    get:
+      tags:
+        - neighborhoods
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'Neighborhood Identifier'
+          required: true
+          schema:
+            type: integer
+            format: bigint
+      responses:
+        '200':
+          description: 'Shown Neighborhood successfully'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/City'
+        '400':
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/states:
+    get:
+      tags:
+        - states
+      parameters:
+        -
+          name: stateNameSearch
+          in: query
+          description: 'A string to be searched inside name attribute'
+          required: false
+          schema:
+            type: string
+        -
+          name: stateAbbreviationSearch
+          in: query
+          description: 'A string to be searched inside abbreviation attribute'
+          required: false
+          schema:
+            type: string
+        -
+          name: stateCreatedAtGreaterThan
+          in: query
+          description: 'Specifies states created after a given date'
+          required: false
+          schema:
+            type: string
+            format: date-time
+        -
+          name: stateCreatedAtLesserThan
+          in: query
+          description: 'Specifies states created before a given date'
+          required: false
+          schema:
+            type: string
+            format: date-time
+        -
+          name: stateUpdatedAtGreaterThan
+          in: query
+          description: 'Specifies states last updated after a given date'
+          required: false
+          schema:
+            type: string
+            format: date-time
+        -
+          name: stateUpdatedAtLesserThan
+          in: query
+          description: 'Specifies states last updated before a given date'
+          required: false
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: 'List all states'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/State'
+        '400':
+          description: 'Request error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  '/api/states/{id}':
+    get:
+      tags:
+        - states
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'State Identifier'
+          required: true
+          schema:
+            type: integer
+            format: bigint
+      responses:
+        '200':
+          description: 'State has been found'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/State'
+        '400':
+          description: 'Request error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: 'Not found error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/states/:
+    post:
+      tags:
+        - states
+      responses:
+        '201':
+          description: 'State successfully created'
+        '400':
+          description: 'Request error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /api/streets:
+    get:
+      tags:
+        - streets
+      parameters:
+        -
+          name: streetNameSearch
+          in: query
+          description: 'A string to be searched inside name attribute'
+          required: false
+          schema:
+            type: string
+        -
+          name: streetPostCodeSearch
+          in: query
+          description: 'A string to be searched inside postCode attribute'
+          required: false
+          schema:
+            type: string
+        -
+          name: streetCreatedAtGreaterThan
+          in: query
+          description: 'Specifies streets created after a given date'
+          required: false
+          schema:
+            type: string
+            format: date-time
+        -
+          name: streetCreatedAtLesserThan
+          in: query
+          description: 'Specifies streets created before a given date'
+          required: false
+          schema:
+            type: string
+            format: date-time
+        -
+          name: streetUpdatedAtGreaterThan
+          in: query
+          description: 'Specifies streets last updated after a given date'
+          required: false
+          schema:
+            type: string
+            format: date-time
+        -
+          name: streetUpdatedAtLesserThan
+          in: query
+          description: 'Specifies streets last updated before a given date'
+          required: false
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: 'Streets successfully listed'
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Street'
+        '400':
+          description: 'Request error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: 'Server error'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    City:
+      properties:
+        id:
+          description: 'City''s Identifier'
+          type: integer
+          format: bigint
+          example: 812581236
+        name:
+          description: 'City''s Name'
+          type: string
+          format: string
+          example: 'São Paulo'
+        stateId:
+          description: 'City''s State Id Foreign'
+          type: integer
+          format: bigint
+          example: 812581237
+        created_at:
+          description: 'Timestamp of creation in database'
+          type: string
+          format: date-time
+        updated_at:
+          description: 'Timestamp of last update in database'
+          type: string
+          format: date-time
+      type: object
+    Establishment:
+      properties:
+        uuid:
+          description: 'Establishment''s Universal Unique Identifier'
+          type: string
+          format: uuid
+        name:
+          description: 'Establishment''s Name'
+          type: string
+        email:
+          description: 'Establishment''s Email'
+          type: string
+          format: email
+        photoUrl:
+          description: 'Establishment''s Photo Url'
+          type: string
+          format: url
+        streetId:
+          description: 'Establishment''s Street Id Foreign'
+          type: integer
+          format: bigint
+        addresNumber:
+          description: 'Establishment Address'' Number'
+          type: string
+        created_at:
+          description: 'Timestamp of creation in database'
+          type: string
+          format: date-time
+        updated_at:
+          description: 'Timestamp of last update in database'
+          type: string
+          format: date-time
+      type: object
+    Neighborhood:
+      properties:
+        id:
+          description: 'Neighborhood''s Identifier'
+          type: integer
+          format: bigint
+          example: 3123876
+        name:
+          description: 'Neighborhood''s Name'
+          type: string
+          format: string
+          example: Centro
+        stateId:
+          description: 'Neighborhood''s City Id Foreign'
+          type: integer
+          format: bigint
+          example: 31123697
+        created_at:
+          description: 'Timestamp of creation in database'
+          type: string
+          format: date-time
+        updated_at:
+          description: 'Timestamp of last update in database'
+          type: string
+          format: date-time
+      type: object
+    State:
+      properties:
+        id:
+          description: 'State''s Identifier'
+          type: integer
+          format: bigint
+          example: 3876181
+        name:
+          description: 'State''s Name'
+          type: string
+          format: string
+          example: 'São Paulo'
+        abbreviation:
+          description: 'State''s Abbreviation'
+          type: string
+          pattern: '/^[A-Z]{2}$/'
+          example: SP
+        created_at:
+          description: 'Timestamp of creation in database'
+          type: string
+          format: date-time
+        updated_at:
+          description: 'Timestamp of last update in database'
+          type: string
+          format: date-time
+      type: object
+    Street:
+      properties:
+        id:
+          description: 'Street''s Identifier'
+          type: integer
+          format: bigint
+          example: 8125379
+        name:
+          description: 'Street''s Name'
+          type: string
+          format: string
+          example: 'Rua Antônio de Godói 122'
+        postCode:
+          description: 'Street''s Post Code'
+          type: string
+          pattern: '/^\d{2}\.?\d{3}-?\d{3}$/'
+          example: 01.034-903
+        neighborhoodId:
+          description: 'Street''s Neighborhood Id Foreign'
+          type: integer
+          format: bigint
+          example: 8125378
+        created_at:
+          description: 'Timestamp of creation in database'
+          type: string
+          format: date-time
+        updated_at:
+          description: 'Timestamp of last update in database'
+          type: string
+          format: date-time
+      type: object
+    ErrorResponse:
+      properties:
+        errors:
+          type: array
+          items:
+            description: 'Error string'
+            type: string
+            example: 'This is an error string example. There are no line-breaks.'
+      type: object
