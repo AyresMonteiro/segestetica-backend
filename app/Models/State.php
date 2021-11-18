@@ -13,6 +13,10 @@ class State extends Model
 {
     use HasFactory;
 
+    const stateNamePattern = "/^(\p{L}| )+$/u";
+    const stateAbbreviationPattern = "/^[A-Z]{2-3}$/";
+    const stateAbbreviationQueryPattern = "/^[A-Z]{1-3}$/";
+
     protected $fillable = [
         /**
          *  State's Identifier
@@ -20,8 +24,8 @@ class State extends Model
          * 
          *  @OA\Property(
          *      property="id",
-         *      format="bigint",
-         *      example=3876181,
+         *      format="tinyint",
+         *      example=255,
          *  )
          */
         'id',
@@ -32,7 +36,8 @@ class State extends Model
          *  @OA\Property(
          *      property="name",
          *      format="string",
-         *      example="São Paulo"
+         *      example="São Paulo",
+         *      pattern="/^(\p{L}| )+$/u",
          *  )
          */
         'name',
@@ -42,8 +47,8 @@ class State extends Model
          * 
          *  @OA\Property(
          *      property="abbreviation",
-         *      pattern="/^[A-Z]{2}$/",
          *      example="SP",
+         *      pattern="/^[A-Z]{2}$/",
          *  )
          */
         'abbreviation',
@@ -72,11 +77,11 @@ class State extends Model
     public static function getQueryValidator(array $data)
     {
         return Validator::make($data, [
-            'id' => ['nullable', 'integer'],
-            'name' => ['nullable', 'string'],
-            'name_search' => ['nullable', 'string'],
-            'abbreviation' => ['nullable', 'string'],
-            'abbreviation_search' => ['nullable', 'string'],
+            'id' => ['nullable', 'integer', 'max:255'],
+            'name' => ['nullable', 'string', 'regex:' . self::stateNamePattern],
+            'name_search' => ['nullable', 'string', 'regex:' . self::stateNamePattern],
+            'abbreviation' => ['nullable', 'string', 'regex:' . self::stateAbbreviationPattern],
+            'abbreviation_search' => ['nullable', 'string', 'regex:' . self::stateAbbreviationQueryPattern],
             'created_at_greater_than' => ['nullable', 'date'],
             'created_at_lesser_than' => ['nullable', 'date'],
             'updated_at_greater_than' => ['nullable', 'date'],
@@ -87,32 +92,32 @@ class State extends Model
     public static function getStoreValidator(array $data)
     {
         return Validator::make($data, [
-            'name' => ['required', 'string', 'unique:states'],
-            'abbreviation' => ['required', 'string', 'unique:states'],
+            'name' => ['required', 'string', 'regex:' . self::stateNamePattern, 'unique:states'],
+            'abbreviation' => ['required', 'string', 'regex:' . self::stateAbbreviationPattern, 'unique:states'],
         ]);
     }
 
     public static function getStoreRequestValidator(array $data)
     {
         return Validator::make($data, [
-            'name' => ['required', 'string'],
-            'abbreviation' => ['required', 'string'],
+            'name' => ['required', 'string', 'regex:' . self::stateNamePattern],
+            'abbreviation' => ['required', 'string', 'regex:' . self::stateAbbreviationPattern],
         ]);
     }
 
     public static function getUpdateValidator(array $data)
     {
         return Validator::make($data, [
-            'name' => ['required_without_all:abbreviation', 'string', 'unique:states'],
-            'abbreviation' => ['required_without_all:name', 'string', 'unique:states'],
+            'name' => ['required_without_all:abbreviation', 'string', 'regex:' . self::stateNamePattern, 'unique:states'],
+            'abbreviation' => ['required_without_all:name', 'string', 'regex:' . self::stateAbbreviationPattern, 'unique:states'],
         ]);
     }
 
     public static function getUpdateRequestValidator(array $data)
     {
         return Validator::make($data, [
-            'name' => ['required_without_all:abbreviation', 'string'],
-            'abbreviation' => ['required_without_all:name', 'string'],
+            'name' => ['required_without_all:abbreviation', 'string', 'regex:' . self::stateNamePattern],
+            'abbreviation' => ['required_without_all:name', 'string', 'regex:' . self::stateAbbreviationPattern],
         ]);
     }
 }

@@ -37,7 +37,7 @@ class NeighborhoodController extends Controller
             $data = NeighborhoodHelper::getStoreRequestData($req);
             $neighborhood = NeighborhoodHelper::handleStoreRequest($data);
 
-            return DefaultResponseHandler::customResponse($neighborhood);
+            return DefaultResponseHandler::customResponse($neighborhood, 201);
         };
     }
 

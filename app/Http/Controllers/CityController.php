@@ -37,7 +37,7 @@ class CityController extends Controller
             $data = CityHelper::getStoreRequestData($req);
             $city = CityHelper::handleStoreRequest($data);
 
-            return DefaultResponseHandler::customResponse($city);
+            return DefaultResponseHandler::customResponse($city, 201);
         };
     }
 

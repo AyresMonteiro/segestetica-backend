@@ -4,6 +4,7 @@
  *  @OA\Info(title="SegEstética API", version="1.0.0", contact={"email":"ayresmonteiro52@gmail.com"})
  * 
  *  @OA\Schema(
+ *      title="Example Error Response",
  *      schema="ErrorResponse",
  *      type="object",
  *      @OA\Property(
