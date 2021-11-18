@@ -6,15 +6,66 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Validator;
 
+/**
+ * @OA\Schema()
+ */
 class Neighborhood extends Model
 {
     use HasFactory;
 
     protected $fillable = [
+        /**
+         *  Neighborhood's Identifier
+         *  @var integer
+         * 
+         *  @OA\Property(
+         *      property="id",
+         *      format="bigint",
+         *      example=3123876,
+         *  )
+         */
         'id',
+        /**
+         *  Neighborhood's Name
+         *  @var string
+         * 
+         *  @OA\Property(
+         *      property="name",
+         *      format="string",
+         *      example="Centro",
+         *  )
+         */
         'name',
+        /**
+         *  Neighborhood's City Id Foreign
+         *  @var integer
+         * 
+         *  @OA\Property(
+         *      property="stateId",
+         *      format="bigint",
+         *      example=31123697,
+         *  )
+         */
         'cityId',
+        /**
+         *  Timestamp of creation in database
+         *  @var string
+         * 
+         *  @OA\Property(
+         *      property="created_at",
+         *      format="date-time",
+         *  )
+         */
         'created_at',
+        /**
+         *  Timestamp of last update in database
+         *  @var string
+         * 
+         *  @OA\Property(
+         *      property="updated_at",
+         *      format="date-time",
+         *  )
+         */
         'updated_at',
     ];
 

@@ -7,20 +7,93 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Sanctum\HasApiTokens;
 
+/**
+ * @OA\Schema()
+ */
 class Establishment extends Model
 {
     use HasFactory, HasApiTokens;
 
     protected $fillable = [
+        /**
+         *  Establishment's Universal Unique Identifier
+         *  @var string
+         * 
+         *  @OA\Property(
+         *      property="uuid",
+         *      format="uuid",
+         *  )
+         */
         'uuid',
+        /**
+         *  Establishment's Name
+         *  @var string
+         * 
+         *  @OA\Property(
+         *      property="name",
+         *  )
+         */
         'name',
+        /**
+         *  Establishment's Email
+         *  @var string
+         * 
+         *  @OA\Property(
+         *      property="email",
+         *      format="email",
+         *  )
+         */
         'email',
+        /**
+         *  Establishment's Photo Url
+         *  @var string
+         * 
+         *  @OA\Property(
+         *      property="photoUrl",
+         *      format="url",
+         *  )
+         */
         'photoUrl',
+        /**
+         *  Establishment's Street Id Foreign
+         *  @var integer
+         * 
+         *  @OA\Property(
+         *      property="streetId",
+         *      format="bigint",
+         *  )
+         */
         'streetId',
+        /**
+         *  Establishment Address' Number
+         *  @var string
+         * 
+         *  @OA\Property(
+         *      property="addresNumber",
+         *  )
+         */
         'addressNumber',
         'deleted',
         'passwordHash',
+        /**
+         *  Timestamp of creation in database
+         *  @var string
+         * 
+         *  @OA\Property(
+         *      property="created_at",
+         *      format="date-time",
+         *  )
+         */
         'created_at',
+        /**
+         *  Timestamp of last update in database
+         *  @var string
+         * 
+         *  @OA\Property(
+         *      property="updated_at",
+         *      format="date-time",
+         *  )
+         */
         'updated_at',
     ];
 

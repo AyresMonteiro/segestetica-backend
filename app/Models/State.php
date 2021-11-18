@@ -6,15 +6,66 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Validator;
 
+/**
+ * @OA\Schema()
+ */
 class State extends Model
 {
     use HasFactory;
 
     protected $fillable = [
+        /**
+         *  State's Identifier
+         *  @var integer
+         * 
+         *  @OA\Property(
+         *      property="id",
+         *      format="bigint",
+         *      example=3876181,
+         *  )
+         */
         'id',
+        /**
+         *  State's Name
+         *  @var string
+         * 
+         *  @OA\Property(
+         *      property="name",
+         *      format="string",
+         *      example="São Paulo"
+         *  )
+         */
         'name',
+        /**
+         *  State's Abbreviation
+         *  @var string
+         * 
+         *  @OA\Property(
+         *      property="abbreviation",
+         *      pattern="/^[A-Z]{2}$/",
+         *      example="SP",
+         *  )
+         */
         'abbreviation',
+        /**
+         *  Timestamp of creation in database
+         *  @var string
+         * 
+         *  @OA\Property(
+         *      property="created_at",
+         *      format="date-time",
+         *  )
+         */
         'created_at',
+        /**
+         *  Timestamp of last update in database
+         *  @var string
+         * 
+         *  @OA\Property(
+         *      property="updated_at",
+         *      format="date-time",
+         *  )
+         */
         'updated_at',
     ];
 
