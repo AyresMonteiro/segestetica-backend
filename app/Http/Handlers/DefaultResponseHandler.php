@@ -6,7 +6,7 @@ class DefaultResponseHandler
 {
   public static function defaultResponse()
   {
-    return response('', 200);
+    return response('', 204);
   }
 
   public static function customResponse($data = [], $statusCode = 200)

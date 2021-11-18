@@ -37,7 +37,7 @@ class StreetController extends Controller
             $data = StreetHelper::getStoreRequestData($req);
             $street = StreetHelper::handleStoreRequest($data);
 
-            return DefaultResponseHandler::customResponse($street);
+            return DefaultResponseHandler::customResponse($street, 201);
         };
     }
 

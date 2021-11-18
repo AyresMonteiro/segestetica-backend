@@ -37,7 +37,7 @@ class StateController extends Controller
             $data = StateHelper::getStoreRequestData($req);
             $state = StateHelper::handleStoreRequest($data);
 
-            return DefaultResponseHandler::customResponse($state);
+            return DefaultResponseHandler::customResponse($state, 201);
         };
     }
 
