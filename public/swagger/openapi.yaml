@@ -19,7 +19,7 @@ paths:
           schema:
             type: string
         -
-          name: cityStateId
+          name: cityCityId
           in: query
           description: 'City''s State Id Foreign.'
           required: false
