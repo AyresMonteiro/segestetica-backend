@@ -9,25 +9,26 @@ paths:
     get:
       tags:
         - cities
+      description: 'List cities. Filters below can be applied.'
       parameters:
         -
           name: cityNameSearch
           in: query
-          description: 'A string to be searched inside name attribute'
+          description: 'A string to be searched inside name attribute.'
           required: false
           schema:
             type: string
         -
-          name: cityStateId
+          name: cityCityId
           in: query
-          description: 'City''s State Id Foreign'
+          description: 'City''s City Id Foreign.'
           required: false
           schema:
             type: integer
         -
           name: cityCreatedAtGreaterThan
           in: query
-          description: 'Specifies cities created after a given date'
+          description: 'Specifies cities created after a given date.'
           required: false
           schema:
             type: string
@@ -35,7 +36,7 @@ paths:
         -
           name: cityCreatedAtLesserThan
           in: query
-          description: 'Specifies cities created before a given date'
+          description: 'Specifies cities created before a given date.'
           required: false
           schema:
             type: string
@@ -43,7 +44,7 @@ paths:
         -
           name: cityUpdatedAtGreaterThan
           in: query
-          description: 'Specifies cities last updated after a given date'
+          description: 'Specifies cities last updated after a given date.'
           required: false
           schema:
             type: string
@@ -51,14 +52,14 @@ paths:
         -
           name: cityUpdatedAtLesserThan
           in: query
-          description: 'Specifies cities last updated before a given date'
+          description: 'Specifies cities last updated before a given date.'
           required: false
           schema:
             type: string
             format: date-time
       responses:
         '200':
-          description: 'Cities successfully listed'
+          description: 'Cities successfully listed.'
           content:
             application/json:
               schema:
@@ -66,13 +67,42 @@ paths:
                 items:
                   $ref: '#/components/schemas/City'
         '400':
-          description: 'Request error'
+          description: 'Request error.'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '500':
-          description: 'Server error'
+          description: 'Server error.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    post:
+      tags:
+        - cities
+      description: 'Stores a new city.'
+      requestBody:
+        description: 'City data to be stored.'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CityDataRequestBody'
+      responses:
+        '201':
+          description: 'City successfully created.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/City'
+        '400':
+          description: 'Request error.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: 'Server error.'
           content:
             application/json:
               schema:
@@ -81,36 +111,109 @@ paths:
     get:
       tags:
         - cities
+      description: 'Shows a city by a given identifier.'
       parameters:
         -
           name: id
           in: path
-          description: 'City Identifier'
+          description: 'City Identifier.'
           required: true
           schema:
             type: integer
             format: bigint
       responses:
         '200':
-          description: 'City has been found'
+          description: 'City has been found.'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/City'
         '400':
-          description: 'Request error'
+          description: 'Request error.'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '404':
-          description: 'Not found error'
+          description: 'Not found error.'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '500':
-          description: 'Server error'
+          description: 'Server error.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    put:
+      tags:
+        - cities
+      description: 'Updates a city by a given identifier.'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'City Identifier.'
+          required: true
+          schema:
+            type: integer
+            format: tinyint
+      requestBody:
+        description: 'New city data. You must send at least one of these attributes below.'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CityDataRequestBody'
+      responses:
+        '200':
+          description: 'City successfully updated.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/City'
+        '400':
+          description: 'Request error.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: 'Server error.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      tags:
+        - cities
+      description: 'Deletes a city by a given identifier.'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'City Identifier.'
+          required: true
+          schema:
+            type: integer
+            format: tinyint
+      responses:
+        '204':
+          description: 'City has been deleted.'
+        '400':
+          description: 'Request error.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: 'Not found error.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: 'Server error.'
           content:
             application/json:
               schema:
@@ -176,25 +279,27 @@ paths:
     get:
       tags:
         - states
+      description: 'List states. Filters below can be applied.'
       parameters:
         -
           name: stateNameSearch
           in: query
-          description: 'A string to be searched inside name attribute'
+          description: 'A string to be searched inside name attribute.'
           required: false
           schema:
             type: string
         -
           name: stateAbbreviationSearch
           in: query
-          description: 'A string to be searched inside abbreviation attribute'
+          description: 'A string to be searched inside abbreviation attribute.'
           required: false
           schema:
             type: string
+            pattern: '/^[A-Z]{1-3}$/'
         -
           name: stateCreatedAtGreaterThan
           in: query
-          description: 'Specifies states created after a given date'
+          description: 'Specifies states created after a given date.'
           required: false
           schema:
             type: string
@@ -202,7 +307,7 @@ paths:
         -
           name: stateCreatedAtLesserThan
           in: query
-          description: 'Specifies states created before a given date'
+          description: 'Specifies states created before a given date.'
           required: false
           schema:
             type: string
@@ -210,7 +315,7 @@ paths:
         -
           name: stateUpdatedAtGreaterThan
           in: query
-          description: 'Specifies states last updated after a given date'
+          description: 'Specifies states last updated after a given date.'
           required: false
           schema:
             type: string
@@ -218,14 +323,14 @@ paths:
         -
           name: stateUpdatedAtLesserThan
           in: query
-          description: 'Specifies states last updated before a given date'
+          description: 'Specifies states last updated before a given date.'
           required: false
           schema:
             type: string
             format: date-time
       responses:
         '200':
-          description: 'List all states'
+          description: 'List all states.'
           content:
             application/json:
               schema:
@@ -233,13 +338,42 @@ paths:
                 items:
                   $ref: '#/components/schemas/State'
         '400':
-          description: 'Request error'
+          description: 'Request error.'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '500':
-          description: 'Server error'
+          description: 'Server error.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    post:
+      tags:
+        - states
+      description: 'Stores a new state.'
+      requestBody:
+        description: 'State data to be stored.'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StateDataRequestBody'
+      responses:
+        '201':
+          description: 'State successfully created.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/State'
+        '400':
+          description: 'Request error.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: 'Server error.'
           content:
             application/json:
               schema:
@@ -248,55 +382,109 @@ paths:
     get:
       tags:
         - states
+      description: 'Shows a state by a given identifier.'
       parameters:
         -
           name: id
           in: path
-          description: 'State Identifier'
+          description: 'State Identifier.'
           required: true
           schema:
             type: integer
-            format: bigint
+            format: tinyint
       responses:
         '200':
-          description: 'State has been found'
+          description: 'State has been found.'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/State'
         '400':
-          description: 'Request error'
+          description: 'Request error.'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '404':
-          description: 'Not found error'
+          description: 'Not found error.'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '500':
-          description: 'Server error'
+          description: 'Server error.'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
-  /api/states/:
-    post:
+    put:
       tags:
         - states
+      description: 'Updates a state by a given identifier.'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'State Identifier.'
+          required: true
+          schema:
+            type: integer
+            format: tinyint
+      requestBody:
+        description: 'New state data. You must send at least one of these attributes below.'
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StateDataRequestBody'
       responses:
-        '201':
-          description: 'State successfully created'
+        '200':
+          description: 'State successfully updated.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/State'
         '400':
-          description: 'Request error'
+          description: 'Request error.'
           content:
             application/json:
               schema:
                 $ref: '#/components/schemas/ErrorResponse'
         '500':
-          description: 'Server error'
+          description: 'Server error.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      tags:
+        - states
+      description: 'Deletes a state by a given identifier.'
+      parameters:
+        -
+          name: id
+          in: path
+          description: 'State Identifier.'
+          required: true
+          schema:
+            type: integer
+            format: tinyint
+      responses:
+        '204':
+          description: 'State has been deleted.'
+        '400':
+          description: 'Request error.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '404':
+          description: 'Not found error.'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: 'Server error.'
           content:
             application/json:
               schema:
@@ -386,12 +574,13 @@ components:
           description: 'City''s Name'
           type: string
           format: string
+          pattern: '/^(\p{L}| )+$/u'
           example: 'São Paulo'
         stateId:
           description: 'City''s State Id Foreign'
           type: integer
-          format: bigint
-          example: 812581237
+          format: tinyint
+          example: 255
         created_at:
           description: 'Timestamp of creation in database'
           type: string
@@ -465,12 +654,13 @@ components:
         id:
           description: 'State''s Identifier'
           type: integer
-          format: bigint
-          example: 3876181
+          format: tinyint
+          example: 255
         name:
           description: 'State''s Name'
           type: string
           format: string
+          pattern: '/^(\p{L}| )+$/u'
           example: 'São Paulo'
         abbreviation:
           description: 'State''s Abbreviation'
@@ -517,7 +707,35 @@ components:
           type: string
           format: date-time
       type: object
+    CityDataRequestBody:
+      title: 'City Data Request Body'
+      properties:
+        cityName:
+          description: 'Name of city.'
+          type: string
+          pattern: '/^(\p{L}| )+$/u'
+          example: 'São Paulo'
+        cityCityId:
+          description: 'City''s City Identifier.'
+          type: integer
+          example: 255
+      type: object
+    StateDataRequestBody:
+      title: 'State Data Request Body'
+      properties:
+        stateName:
+          description: 'Name of state.'
+          type: string
+          pattern: '/^(\p{L}| )+$/u'
+          example: 'São Paulo'
+        stateAbbreviation:
+          description: 'Abbreviation of state.'
+          type: string
+          pattern: '/^[A-Z]{2}$/'
+          example: SP
+      type: object
     ErrorResponse:
+      title: 'Example Error Response'
       properties:
         errors:
           type: array
