@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Http\Handlers\LogHandler;
 use Illuminate\Console\Command;
 
 class GenerateDocs extends Command
@@ -37,7 +36,7 @@ class GenerateDocs extends Command
         $swagger_dir = __DIR__ . '/../../../public/swagger';
 
         $search_paths = [
-            __DIR__ . '/../../../routes/',
+            __DIR__ . '/../../../routes/docs/',
             __DIR__ . '/../../../app/Http/Controllers',
             __DIR__ . '/../../../app/Models',
         ];
