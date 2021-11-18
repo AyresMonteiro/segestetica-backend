@@ -65,7 +65,7 @@ class GenerateDocs extends Command
     public function handle()
     {
         do {
-            $sleepTime = $this->option('continuous') != null ? $this->option('continuous') : 2;
+            $sleepTime = $this->option('sleepTime') != null ? $this->option('sleepTime') : 2;
 
             $this->run_command();
             echo now() . "\tCompiled.\n";
