@@ -13,8 +13,8 @@
  *      	pattern="/^(\p{L}| )+$/u",
  * 		),
  * 		@OA\Property(
- * 			property="cityCityId",
- * 			description="City's City Identifier.",
+ * 			property="cityStateId",
+ * 			description="City's State Identifier.",
  * 			example=255,
  * 			type="integer",
  * 		),
@@ -36,13 +36,13 @@
  *          description="A string to be searched inside name attribute.",
  *      ),
  *      @OA\Parameter(
- *          name="cityCityId",
+ *          name="cityStateId",
  *          in="query",
  *          required=false,
  *          @OA\Schema(
  *              type="integer",
  *          ),
- *          description="City's City Id Foreign.",
+ *          description="City's State Id Foreign.",
  *      ),
  *      @OA\Parameter(
  *          name="cityCreatedAtGreaterThan",

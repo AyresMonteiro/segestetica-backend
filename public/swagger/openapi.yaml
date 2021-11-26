@@ -21,7 +21,7 @@ paths:
         -
           name: cityCityId
           in: query
-          description: 'City''s City Id Foreign.'
+          description: 'City''s State Id Foreign.'
           required: false
           schema:
             type: integer
@@ -715,8 +715,8 @@ components:
           type: string
           pattern: '/^(\p{L}| )+$/u'
           example: 'São Paulo'
-        cityCityId:
-          description: 'City''s City Identifier.'
+        cityStateId:
+          description: 'City''s State Identifier.'
           type: integer
           example: 255
       type: object
