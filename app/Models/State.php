@@ -14,8 +14,8 @@ class State extends Model
     use HasFactory;
 
     const stateNamePattern = "/^(\p{L}| )+$/u";
-    const stateAbbreviationPattern = "/^[A-Z]{2-3}$/";
-    const stateAbbreviationQueryPattern = "/^[A-Z]{1-3}$/";
+    const stateAbbreviationPattern = "/^[A-Z]{2,3}$/";
+    const stateAbbreviationQueryPattern = "/^[A-Z]{1,3}$/";
 
     protected $fillable = [
         /**

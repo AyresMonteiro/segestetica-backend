@@ -17,7 +17,7 @@
  * 			description="Abbreviation of state.",
  * 			example="SP",
  * 			type="string",
- *      	pattern="/^[A-Z]{2}$/",
+ *      	pattern="/^[A-Z]{2,3}$/",
  * 		),
  *	)
  */
@@ -43,7 +43,7 @@
  *          required=false,
  *          @OA\Schema(
  *              type="string",
- * 				pattern="/^[A-Z]{1-3}$/",
+ * 				pattern="/^[A-Z]{1,3}$/",
  *          ),
  *          description="A string to be searched inside abbreviation attribute.",
  *      ),
