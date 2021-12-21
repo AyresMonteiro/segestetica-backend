@@ -116,4 +116,9 @@ class City extends Model
             'stateId' => ['required_without_all:name', 'integer', 'max:255'],
         ]);
     }
+
+    public function state()
+    {
+        return $this->belongsTo(State::class, 'stateId', 'id');
+    }
 }
