@@ -184,4 +184,9 @@ class Establishment extends Model
             'token' => ['required', 'string', 'regex:' . self::tokenRegex],
         ]);
     }
+
+    public function street()
+    {
+        return $this->belongsTo(Street::class, 'streetId', 'id');
+    }
 }
