@@ -21,6 +21,7 @@ class SendConfirmationMail implements ShouldQueue
      */
     protected $mailModel;
 
+    public $tries = 3;
 
     /**
      * Create a new job instance.
