@@ -11,6 +11,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\App;
 
 class SendConfirmationMail implements ShouldQueue
 {
@@ -40,6 +41,8 @@ class SendConfirmationMail implements ShouldQueue
      */
     public function handle(MailHandler $mailHandler)
     {
+        App::setLocale('pt-BR');
+
         if ($this->mailModel instanceof Establishment) {
             $data = self::generateDataFromEstablishment($this->mailModel);
         } else {
