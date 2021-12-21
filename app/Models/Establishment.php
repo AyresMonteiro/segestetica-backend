@@ -98,6 +98,7 @@ class Establishment extends Model
     ];
 
     protected $hidden = [
+        'street',
         'passwordHash',
         'deleted',
     ];
@@ -188,5 +189,21 @@ class Establishment extends Model
     public function street()
     {
         return $this->belongsTo(Street::class, 'streetId', 'id');
+    }
+
+    public function getAddressAttribute()
+    {
+        $address = [
+            "street" => $this->street,
+            "neighborhood" => $this->street->neighborhood,
+            "city" => $this->street->neighborhood->city,
+            "state" => $this->street->neighborhood->city->state,
+        ];
+
+        $address["street"]->makeHidden('neighborhood');
+        $address["neighborhood"]->makeHidden('city');
+        $address["city"]->makeHidden('state');
+
+        return $address;
     }
 }
