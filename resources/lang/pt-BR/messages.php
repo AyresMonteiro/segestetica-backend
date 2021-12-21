@@ -19,4 +19,13 @@ return [
   'establishment_not_found' => 'Estabelecimento não encontrado.',
   'can_not' => "Você não tem permissão.",
   'email_confirmed' => 'Seu e-mail foi confirmado.',
+  'deleted' => ":Entity excluído(a) com sucesso!",
+
+  'entities' => [
+    'city' => 'cidade',
+    'establishment' => 'estabelecimento',
+    'neighborhood' => 'bairro',
+    'state' => 'estado',
+    'street' => 'rua',
+  ],
 ];

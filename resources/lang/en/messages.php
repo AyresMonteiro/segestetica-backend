@@ -19,4 +19,5 @@ return [
   'establishment_not_found' => 'Establishment not found.',
   'can_not' => "You do not have permission.",
   'email_confirmed' => 'Your email has been confirmed.',
+  'deleted' => ":entity successfully deleted!",
 ];
