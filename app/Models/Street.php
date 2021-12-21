@@ -128,4 +128,9 @@ class Street extends Model
             'neighborhoodId' => ['required_without_all:name,postCode', 'integer'],
         ]);
     }
+
+    public function neighborhood()
+    {
+        return $this->belongsTo(Neighborhood::class, 'neighborhoodId', 'id');
+    }
 }
