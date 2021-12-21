@@ -5,18 +5,14 @@ namespace App\Http\Helpers;
 use App\Exceptions\GenericAppException;
 use App\Http\Handlers\{
   AuthHandler,
-  ErrorResponseHandler,
   FileHandler,
   MailHandler,
   ValidatorHandler
 };
 use App\Http\Handlers\Auth\SanctumAuthSystem;
 use App\Http\Handlers\Mail\GmailMailer;
-use Closure;
-use Exception;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Validator as FacadesValidator;
 
@@ -27,21 +23,6 @@ class GenericHelper
   public const LesserThanRegex = "/^(.*)_lesser_than$/";
   public const DifferentThanRegex = "/^(.*)_different_than$/";
   public const SearchRegex = "/^(.*)_search$/";
-
-  public static function genericTryCatchFactory(Closure $closure)
-  {
-    return function (Request $req) use ($closure) {
-      try {
-        return $closure($req);
-      } catch (GenericAppException $e) {
-        $e->performActions();
-
-        return ErrorResponseHandler::customError($e->getCustomErrors(), $e->getStatusCode());
-      } catch (Exception $e) {
-        return ErrorResponseHandler::defaultError();
-      }
-    };
-  }
 
   public static function getDefaultAuthHandler()
   {
