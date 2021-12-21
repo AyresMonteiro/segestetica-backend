@@ -2,6 +2,9 @@
 
 namespace App\Http\Handlers\Mail;
 
+// ATTENTION: Sometimes you may need run "php artisan config:clear" to make
+// things work properly
+
 use League\OAuth2\Client\Provider\Google;
 use PHPMailer\PHPMailer\OAuth;
 use PHPMailer\PHPMailer\PHPMailer;
