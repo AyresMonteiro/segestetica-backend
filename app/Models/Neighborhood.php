@@ -113,4 +113,9 @@ class Neighborhood extends Model
             'cityId' => ['required', 'integer'],
         ]);
     }
+
+    public function city()
+    {
+        return $this->belongsTo(City::class, 'cityId', 'id');
+    }
 }
