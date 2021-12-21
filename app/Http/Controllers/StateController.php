@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Handlers\DefaultResponseHandler;
+use App\Http\Helpers\GenericHelper;
 use App\Http\Helpers\StateHelper;
+use App\Models\State;
 use Closure;
 use Illuminate\Http\Request;
 
@@ -15,13 +16,15 @@ class StateController extends Controller
      *
      * @return Closure
      */
-    public static function index()
+    public static function index(): Closure
     {
-        return function (Request $req) {
-            $data = StateHelper::getIndexRequestData($req);
-            $states = StateHelper::getStates($data);
+        return function (Request $req): array {
+            return ["state_index_", function () use ($req) {
+                $data = StateHelper::getIndexRequestData($req);
+                $states = StateHelper::getStates($data);
 
-            return DefaultResponseHandler::customResponse($states);
+                return [$states, 200, 300];
+            }];
         };
     }
 
@@ -31,13 +34,15 @@ class StateController extends Controller
      * 
      * @return Closure
      */
-    public static function store()
+    public static function store(): Closure
     {
-        return function (Request $req) {
-            $data = StateHelper::getStoreRequestData($req);
-            $state = StateHelper::handleStoreRequest($data);
+        return function (Request $req): array {
+            return [null, function () use ($req) {
+                $data = StateHelper::getStoreRequestData($req);
+                $state = StateHelper::handleStoreRequest($data);
 
-            return DefaultResponseHandler::customResponse($state, 201);
+                return [$state, 201, 0];
+            }];
         };
     }
 
@@ -47,14 +52,20 @@ class StateController extends Controller
      *
      * @return Closure
      */
-    public static function show()
+    public static function show(): Closure
     {
-        return function (Request $req) {
-            $queryData = ['id' => $req->id];
+        return function (Request $req): array {
+            GenericHelper::validate(State::getQueryValidator([
+                'id' => $req->id
+            ]));
 
-            $state = StateHelper::getState($queryData);
+            return ["state_" . $req->id, function () use ($req) {
+                $queryData = ['id' => $req->id];
 
-            return DefaultResponseHandler::customResponse($state);
+                $state = StateHelper::getState($queryData);
+
+                return [$state, 200, 60];
+            }];
         };
     }
 
@@ -64,15 +75,17 @@ class StateController extends Controller
      *
      * @return Closure
      */
-    public static function update()
+    public static function update(): Closure
     {
-        return function (Request $req) {
-            $queryData = ['id' => $req->id];
+        return function (Request $req): array {
+            return [null, function () use ($req) {
+                $queryData = ['id' => $req->id];
 
-            $data = StateHelper::getUpdateRequestData($req);
-            $state = StateHelper::handleUpdateRequest($queryData, $data);
+                $data = StateHelper::getUpdateRequestData($req);
+                $state = StateHelper::handleUpdateRequest($queryData, $data);
 
-            return DefaultResponseHandler::customResponse($state);
+                return [$state, 200, 0];
+            }];
         };
     }
 
@@ -82,14 +95,20 @@ class StateController extends Controller
      *
      * @return Closure
      */
-    public static function destroy()
+    public static function destroy(): Closure
     {
-        return function (Request $req) {
-            $queryData = ['id' => $req->id];
+        return function (Request $req): array {
+            GenericHelper::validate(State::getQueryValidator([
+                'id' => $req->id
+            ]));
 
-            StateHelper::handleDeleteRequest($queryData);
+            return ["state_delete_" . $req->id, function () use ($req) {
+                $queryData = ['id' => $req->id];
 
-            return DefaultResponseHandler::defaultResponse();
+                StateHelper::handleDeleteRequest($queryData);
+
+                return [__('messages.deleted', ['entity' => __('messages.entities.state')]), 200, 300];
+            }];
         };
     }
 }

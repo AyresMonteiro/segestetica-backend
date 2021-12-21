@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Handlers\DefaultResponseHandler;
 use App\Http\Helpers\CityHelper;
+use App\Http\Helpers\GenericHelper;
+use App\Models\City;
 use Closure;
 use Illuminate\Http\Request;
 
@@ -15,13 +16,25 @@ class CityController extends Controller
      *
      * @return Closure
      */
-    public static function index()
+    public static function index(): Closure
     {
-        return function (Request $req) {
-            $data = CityHelper::getIndexRequestData($req);
-            $cities = CityHelper::getCities($data);
+        return function (Request $req): array {
+            $cache_key = "city_index_";
 
-            return DefaultResponseHandler::customResponse($cities);
+            if (isset($req->cityStateId)) {
+                GenericHelper::validate(City::getQueryValidator([
+                    'stateId' => $req->cityStateId
+                ]));
+
+                $cache_key .= $req->cityStateId;
+            }
+
+            return [$cache_key, function () use ($req): array {
+                $data = CityHelper::getIndexRequestData($req);
+                $cities = CityHelper::getCities($data);
+
+                return [$cities, 200, 300];
+            }];
         };
     }
 
@@ -31,13 +44,15 @@ class CityController extends Controller
      * 
      * @return Closure
      */
-    public static function store()
+    public static function store(): Closure
     {
-        return function (Request $req) {
-            $data = CityHelper::getStoreRequestData($req);
-            $city = CityHelper::handleStoreRequest($data);
+        return function (Request $req): array {
+            return [null, function () use ($req): array {
+                $data = CityHelper::getStoreRequestData($req);
+                $city = CityHelper::handleStoreRequest($data);
 
-            return DefaultResponseHandler::customResponse($city, 201);
+                return [$city, 201, 0];
+            }];
         };
     }
 
@@ -47,14 +62,20 @@ class CityController extends Controller
      *
      * @return Closure
      */
-    public static function show()
+    public static function show(): Closure
     {
-        return function (Request $req) {
-            $queryData = ['id' => $req->id];
+        return function (Request $req): array {
+            GenericHelper::validate(City::getQueryValidator([
+                'id' => $req->id
+            ]));
 
-            $city = CityHelper::getCity($queryData);
+            return ["city_" . $req->id, function () use ($req): array {
+                $queryData = ['id' => $req->id];
 
-            return DefaultResponseHandler::customResponse($city);
+                $city = CityHelper::getCity($queryData);
+
+                return [$city, 200, 60];
+            }];
         };
     }
 
@@ -64,15 +85,17 @@ class CityController extends Controller
      *
      * @return Closure
      */
-    public static function update()
+    public static function update(): Closure
     {
-        return function (Request $req) {
-            $queryData = ['id' => $req->id];
+        return function (Request $req): array {
+            return [null, function () use ($req): array {
+                $queryData = ['id' => $req->id];
 
-            $data = CityHelper::getUpdateRequestData($req);
-            $city = CityHelper::handleUpdateRequest($queryData, $data);
+                $data = CityHelper::getUpdateRequestData($req);
+                $city = CityHelper::handleUpdateRequest($queryData, $data);
 
-            return DefaultResponseHandler::customResponse($city);
+                return [$city, 200, 0];
+            }];
         };
     }
 
@@ -82,14 +105,20 @@ class CityController extends Controller
      *
      * @return Closure
      */
-    public static function destroy()
+    public static function destroy(): Closure
     {
-        return function (Request $req) {
-            $queryData = ['id' => $req->id];
+        return function (Request $req): array {
+            GenericHelper::validate(City::getQueryValidator([
+                'id' => $req->id
+            ]));
 
-            CityHelper::handleDeleteRequest($queryData);
+            return ["city_delete_" . $req->id, function () use ($req): array {
+                $queryData = ['id' => $req->id];
 
-            return DefaultResponseHandler::defaultResponse();
+                CityHelper::handleDeleteRequest($queryData);
+
+                return [__('messages.deleted', ['entity' => __('messages.entities.city')]), 200, 300];
+            }];
         };
     }
 }

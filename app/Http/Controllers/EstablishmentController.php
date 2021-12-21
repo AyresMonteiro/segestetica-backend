@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Handlers\DefaultResponseHandler;
+use App\Exceptions\GenericAppException;
 use App\Http\Helpers\EstablishmentHelper;
+use App\Http\Helpers\GenericHelper;
 use App\Jobs\SendConfirmationMail;
+use App\Models\Establishment;
 use Closure;
 use Illuminate\Http\Request;
 
@@ -16,13 +18,16 @@ class EstablishmentController extends Controller
      *
      * @return Closure
      */
-    public static function index()
+    public static function index(): Closure
     {
-        return function (Request $req) {
-            $data = EstablishmentHelper::getIndexRequestData($req);
-            $establishments = EstablishmentHelper::getEstablishments($data);
+        return function (Request $req): array {
+            return ["establishment_index_", function () use ($req): array {
+                $data = EstablishmentHelper::getIndexRequestData($req);
+                $establishments = EstablishmentHelper::getEstablishments($data);
+                $establishments->each->append('address');
 
-            return DefaultResponseHandler::customResponse($establishments);
+                return [$establishments, 200, 60];
+            }];
         };
     }
 
@@ -32,17 +37,19 @@ class EstablishmentController extends Controller
      * 
      * @return Closure
      */
-    public static function store()
+    public static function store(): Closure
     {
-        return function (Request $req) {
-            $data = EstablishmentHelper::getStoreRequestData($req);
-            $establishment = EstablishmentHelper::handleStoreRequest($data);
+        return function (Request $req): array {
+            return [null, function () use ($req): array {
+                $data = EstablishmentHelper::getStoreRequestData($req);
+                $establishment = EstablishmentHelper::handleStoreRequest($data);
 
-            SendConfirmationMail::dispatch($establishment);
+                SendConfirmationMail::dispatch($establishment);
 
-            return DefaultResponseHandler::customResponse(__("messages.confirm_email", [
-                'email_address' => $establishment->email
-            ]));
+                return [__("messages.confirm_email", [
+                    'email_address' => $establishment->email
+                ]), 200, 120];
+            }];
         };
     }
 
@@ -52,14 +59,22 @@ class EstablishmentController extends Controller
      *
      * @return Closure
      */
-    public static function show()
+    public static function show(): Closure
     {
-        return function (Request $req) {
-            $queryData = ['uuid' => $req->uuid];
+        return function (Request $req): array {
+            GenericHelper::validate(Establishment::getQueryValidator([
+                'uuid' => $req->uuid
+            ]));
 
-            $establishment = EstablishmentHelper::getEstablishment($queryData);
+            return ['establishment_' . $req->uuid, function () use ($req): array {
+                $queryData = ['uuid' => $req->uuid];
 
-            return DefaultResponseHandler::customResponse($establishment);
+                $establishment = EstablishmentHelper::getEstablishment($queryData, true, false);
+
+                $establishment->append('address');
+
+                return [$establishment, 200, 60];
+            }];
         };
     }
 
@@ -69,15 +84,17 @@ class EstablishmentController extends Controller
      *
      * @return Closure
      */
-    public static function update()
+    public static function update(): Closure
     {
-        return function (Request $req) {
-            $queryData = ['uuid' => $req->uuid];
+        return function (Request $req): array {
+            return [null, function () use ($req): array {
+                $queryData = ['uuid' => $req->uuid];
 
-            $data = EstablishmentHelper::getUpdateRequestData($req);
-            $establishment = EstablishmentHelper::handleUpdateRequest($queryData, $data);
+                $data = EstablishmentHelper::getUpdateRequestData($req);
+                $establishment = EstablishmentHelper::handleUpdateRequest($queryData, $data);
 
-            return DefaultResponseHandler::customResponse($establishment);
+                return [$establishment, 200, 0];
+            }];
         };
     }
 
@@ -87,14 +104,20 @@ class EstablishmentController extends Controller
      *
      * @return Closure
      */
-    public static function destroy()
+    public static function destroy(): Closure
     {
-        return function (Request $req) {
-            $queryData = ['uuid' => $req->uuid];
+        return function (Request $req): array {
+            if (!preg_match(GenericHelper::UUIDRegex, $req->uuid)) {
+                throw new GenericAppException([__('validation.uuid', ['attribute' => 'uuid'])], 400);
+            }
 
-            EstablishmentHelper::handleDeleteRequest($queryData);
+            return ["establishment_delete_" . $req->uuid, function () use ($req): array {
+                $queryData = ['uuid' => $req->uuid];
 
-            return DefaultResponseHandler::defaultResponse();
+                EstablishmentHelper::handleDeleteRequest($queryData);
+
+                return [__('messages.deleted', ['entity' => __('messages.entities.establishment')]), 200, 300];
+            }];
         };
     }
 
@@ -104,14 +127,16 @@ class EstablishmentController extends Controller
      * 
      * @return Closure
      */
-    public static function login()
+    public static function login(): Closure
     {
-        return function (Request $req) {
-            $data = EstablishmentHelper::getLoginRequestData($req);
+        return function (Request $req): array {
+            return [null, function () use ($req): array {
+                $data = EstablishmentHelper::getLoginRequestData($req);
 
-            $token = EstablishmentHelper::handleLoginRequest($data);
+                $token = EstablishmentHelper::handleLoginRequest($data);
 
-            return DefaultResponseHandler::customResponse(['token' => $token]);
+                return [['token' => $token], 200, 0];
+            }];
         };
     }
 
@@ -121,14 +146,20 @@ class EstablishmentController extends Controller
      * 
      * @return Closure
      */
-    public static function confirmEmail()
+    public static function confirmEmail(): Closure
     {
-        return function (Request $req) {
-            $data = EstablishmentHelper::getMailConfirmationRequestData($req);
+        return function (Request $req): array {
+            GenericHelper::validate(Establishment::getMailConfirmationValidator([
+                'token' => $req->token,
+            ]));
 
-            EstablishmentHelper::handleMailConfirmation($data);
+            return ["establishment_confirm_" . $req->token, function () use ($req): array {
+                $data = EstablishmentHelper::getMailConfirmationRequestData($req);
 
-            return DefaultResponseHandler::customResponse(__('messages.email_confirmed'));
+                EstablishmentHelper::handleMailConfirmation($data);
+
+                return [__('messages.email_confirmed'), 200, 3600];
+            }];
         };
     }
 }

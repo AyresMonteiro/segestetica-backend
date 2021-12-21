@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Handlers\DefaultResponseHandler;
+use App\Http\Helpers\GenericHelper;
 use App\Http\Helpers\NeighborhoodHelper;
+use App\Models\Neighborhood;
 use Closure;
 use Illuminate\Http\Request;
 
@@ -15,13 +16,25 @@ class NeighborhoodController extends Controller
      *
      * @return Closure
      */
-    public static function index()
+    public static function index(): Closure
     {
-        return function (Request $req) {
-            $data = NeighborhoodHelper::getIndexRequestData($req);
-            $neighborhoods = NeighborhoodHelper::getNeighborhoods($data);
+        return function (Request $req): array {
+            $cache_key = "neighborhood_index_";
 
-            return DefaultResponseHandler::customResponse($neighborhoods);
+            if (isset($req->neighborhoodCityId)) {
+                GenericHelper::validate(Neighborhood::getQueryValidator([
+                    'cityId' => $req->neighborhoodCityId
+                ]));
+
+                $cache_key .= $req->neighborhoodCityId;
+            }
+
+            return [$cache_key, function () use ($req): array {
+                $data = NeighborhoodHelper::getIndexRequestData($req);
+                $neighborhoods = NeighborhoodHelper::getNeighborhoods($data);
+
+                return [$neighborhoods, 200, 60];
+            }];
         };
     }
 
@@ -31,13 +44,15 @@ class NeighborhoodController extends Controller
      * 
      * @return Closure
      */
-    public static function store()
+    public static function store(): Closure
     {
-        return function (Request $req) {
-            $data = NeighborhoodHelper::getStoreRequestData($req);
-            $neighborhood = NeighborhoodHelper::handleStoreRequest($data);
+        return function (Request $req): array {
+            return [null, function () use ($req): array {
+                $data = NeighborhoodHelper::getStoreRequestData($req);
+                $neighborhood = NeighborhoodHelper::handleStoreRequest($data);
 
-            return DefaultResponseHandler::customResponse($neighborhood, 201);
+                return [$neighborhood, 201, 0];
+            }];
         };
     }
 
@@ -47,14 +62,20 @@ class NeighborhoodController extends Controller
      *
      * @return Closure
      */
-    public static function show()
+    public static function show(): Closure
     {
-        return function (Request $req) {
-            $queryData = ['id' => $req->id];
+        return function (Request $req): array {
+            GenericHelper::validate(Neighborhood::getQueryValidator([
+                'id' => $req->id,
+            ]));
 
-            $neighborhood = NeighborhoodHelper::getNeighborhood($queryData);
+            return ["neighborhood_" . $req->id, function () use ($req): array {
+                $queryData = ['id' => $req->id];
 
-            return DefaultResponseHandler::customResponse($neighborhood);
+                $neighborhood = NeighborhoodHelper::getNeighborhood($queryData);
+
+                return [$neighborhood, 200, 60];
+            }];
         };
     }
 
@@ -64,15 +85,17 @@ class NeighborhoodController extends Controller
      *
      * @return Closure
      */
-    public static function update()
+    public static function update(): Closure
     {
-        return function (Request $req) {
-            $queryData = ['id' => $req->id];
+        return function (Request $req): array {
+            return [null, function () use ($req): array {
+                $queryData = ['id' => $req->id];
 
-            $data = NeighborhoodHelper::getUpdateRequestData($req);
-            $neighborhood = NeighborhoodHelper::handleUpdateRequest($queryData, $data);
+                $data = NeighborhoodHelper::getUpdateRequestData($req);
+                $neighborhood = NeighborhoodHelper::handleUpdateRequest($queryData, $data);
 
-            return DefaultResponseHandler::customResponse($neighborhood);
+                return [$neighborhood, 200, 0];
+            }];
         };
     }
 
@@ -82,14 +105,20 @@ class NeighborhoodController extends Controller
      *
      * @return Closure
      */
-    public static function destroy()
+    public static function destroy(): Closure
     {
-        return function (Request $req) {
-            $queryData = ['id' => $req->id];
+        return function (Request $req): array {
+            GenericHelper::validate(Neighborhood::getQueryValidator([
+                'id' => $req->id,
+            ]));
 
-            NeighborhoodHelper::handleDeleteRequest($queryData);
+            return ["neighborhood_delete_" . $req->id, function () use ($req): array {
+                $queryData = ['id' => $req->id];
 
-            return DefaultResponseHandler::defaultResponse();
+                NeighborhoodHelper::handleDeleteRequest($queryData);
+
+                return [__('messages.deleted', ['entity' => __('messages.entities.neighborhood')]), 200, 300];
+            }];
         };
     }
 }

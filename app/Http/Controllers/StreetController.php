@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Handlers\DefaultResponseHandler;
+use App\Http\Helpers\GenericHelper;
 use App\Http\Helpers\StreetHelper;
+use App\Models\Street;
 use Closure;
 use Illuminate\Http\Request;
 
@@ -15,13 +16,25 @@ class StreetController extends Controller
      *
      * @return Closure
      */
-    public static function index()
+    public static function index(): Closure
     {
-        return function (Request $req) {
-            $data = StreetHelper::getIndexRequestData($req);
-            $streets = StreetHelper::getStreets($data);
+        return function (Request $req): array {
+            $cache_key = "street_index_";
 
-            return DefaultResponseHandler::customResponse($streets);
+            if (isset($req->streetNeighborhoodId)) {
+                GenericHelper::validate(Street::getQueryValidator([
+                    'neighborhoodId' => $req->streetNeighborhoodId
+                ]));
+
+                $cache_key .= $req->streetNeighborhoodId;
+            }
+
+            return [$cache_key, function () use ($req): array {
+                $data = StreetHelper::getIndexRequestData($req);
+                $streets = StreetHelper::getStreets($data);
+
+                return [$streets, 200, 60];
+            }];
         };
     }
 
@@ -31,13 +44,15 @@ class StreetController extends Controller
      * 
      * @return Closure
      */
-    public static function store()
+    public static function store(): Closure
     {
-        return function (Request $req) {
-            $data = StreetHelper::getStoreRequestData($req);
-            $street = StreetHelper::handleStoreRequest($data);
+        return function (Request $req): array {
+            return [null, function () use ($req): array {
+                $data = StreetHelper::getStoreRequestData($req);
+                $street = StreetHelper::handleStoreRequest($data);
 
-            return DefaultResponseHandler::customResponse($street, 201);
+                return [$street, 201, 0];
+            }];
         };
     }
 
@@ -47,14 +62,20 @@ class StreetController extends Controller
      *
      * @return Closure
      */
-    public static function show()
+    public static function show(): Closure
     {
-        return function (Request $req) {
-            $queryData = ['id' => $req->id];
+        return function (Request $req): array {
+            GenericHelper::validate(Street::getQueryValidator([
+                'id' => $req->id
+            ]));
 
-            $street = StreetHelper::getStreet($queryData);
+            return ["street_" . $req->id, function () use ($req): array {
+                $queryData = ['id' => $req->id];
 
-            return DefaultResponseHandler::customResponse($street);
+                $street = StreetHelper::getStreet($queryData);
+
+                return [$street, 200, 60];
+            }];
         };
     }
 
@@ -64,15 +85,17 @@ class StreetController extends Controller
      *
      * @return Closure
      */
-    public static function update()
+    public static function update(): Closure
     {
-        return function (Request $req) {
-            $queryData = ['id' => $req->id];
+        return function (Request $req): array {
+            return [null, function () use ($req): array {
+                $queryData = ['id' => $req->id];
 
-            $data = StreetHelper::getUpdateRequestData($req);
-            $street = StreetHelper::handleUpdateRequest($queryData, $data);
+                $data = StreetHelper::getUpdateRequestData($req);
+                $street = StreetHelper::handleUpdateRequest($queryData, $data);
 
-            return DefaultResponseHandler::customResponse($street);
+                return [$street, 200, 0];
+            }];
         };
     }
 
@@ -82,14 +105,20 @@ class StreetController extends Controller
      *
      * @return Closure
      */
-    public static function destroy()
+    public static function destroy(): Closure
     {
-        return function (Request $req) {
-            $queryData = ['id' => $req->id];
+        return function (Request $req): array {
+            GenericHelper::validate(Street::getQueryValidator([
+                'id' => $req->id
+            ]));
 
-            StreetHelper::handleDeleteRequest($queryData);
+            return ["street_delete_" . $req->id, function () use ($req): array {
+                $queryData = ['id' => $req->id];
 
-            return DefaultResponseHandler::defaultResponse();
+                StreetHelper::handleDeleteRequest($queryData);
+
+                return [__('messages.deleted', ['entity' => __('messages.entities.street')]), 200, 300];
+            }];
         };
     }
 }
