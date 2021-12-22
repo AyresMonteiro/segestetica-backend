@@ -19,7 +19,7 @@ class CreateSchedulesTable extends Migration
             $table->time('time');
             $table->foreignUuid('establishmentUuid');
             $table->timestamps();
-            $table->boolean('deleted');
+            $table->boolean('deleted')->default(false);
 
             $table
                 ->foreign('establishmentUuid')
