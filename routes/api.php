@@ -5,6 +5,7 @@ use App\Http\Controllers\{
     CityController,
     EstablishmentController,
     NeighborhoodController,
+    ScheduleController,
     StateController,
     StreetController,
 };
@@ -66,4 +67,12 @@ Route::group(['prefix' => 'establishments'], function () {
     Route::post('/login', LaravelHTTPRequestAdapter::handle(EstablishmentController::login()));
     Route::put('/{uuid}', LaravelHTTPRequestAdapter::handle(EstablishmentController::update()));
     Route::delete('/{uuid}', LaravelHTTPRequestAdapter::handle(EstablishmentController::destroy()));
+});
+
+Route::group(['prefix' => 'schedules'], function () {
+    Route::get('/', LaravelHTTPRequestAdapter::handle(ScheduleController::index()));
+    Route::get('/{id}', LaravelHTTPRequestAdapter::handle(ScheduleController::show()));
+    Route::post('/', LaravelHTTPRequestAdapter::handle(ScheduleController::store()));
+    Route::put('/{id}', LaravelHTTPRequestAdapter::handle(ScheduleController::update()));
+    Route::delete('/{id}', LaravelHTTPRequestAdapter::handle(ScheduleController::destroy()));
 });
