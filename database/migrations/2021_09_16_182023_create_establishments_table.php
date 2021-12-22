@@ -19,7 +19,7 @@ class CreateEstablishmentsTable extends Migration
             $table->string('email');
             $table->string('passwordHash');
             $table->string('photoUrl')->nullable();
-            $table->unsignedBigInteger('streetId');
+            $table->unsignedBigInteger('streetId')->nullable();
             $table->string('addressNumber');
             $table->boolean('deleted')->default(false);
             $table->timestamps();
