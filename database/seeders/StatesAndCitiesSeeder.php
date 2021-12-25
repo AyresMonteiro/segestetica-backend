@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Http\Handlers\LogHandler;
 use App\Models\City;
 use App\Models\State;
 use Carbon\Carbon;
@@ -15,13 +14,17 @@ class StatesAndCitiesSeeder extends Seeder
         $i = 0;
         $cities = [];
         $data = json_decode(file_get_contents(__DIR__ . '/data/estados-e-cidades-do-brasil.json'));
-
+    
         foreach ($data->estados as $key => $estado) {
+            $now = Carbon::now();
+
             $state = new State([
                 'name' => $estado->nome,
                 'abbreviation' => $estado->sigla,
             ]);
 
+            $state->created_at = $now;
+            $state->updated_at = $now;
             $state->save();
 
             foreach ($estado->cidades as $key => $cidade) {
@@ -30,8 +33,8 @@ class StatesAndCitiesSeeder extends Seeder
                     'stateId' => $state->id,
                 ]);
 
-                $city->created_at = Carbon::now();
-                $city->updated_at = Carbon::now();
+                $city->created_at = $now;
+                $city->updated_at = $now;
                 array_push($cities, $city->toArray());
 
                 $i++;
