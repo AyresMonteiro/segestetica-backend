@@ -148,6 +148,23 @@ class EstablishmentController extends Controller
 
     /**
      * Returns a closure that:
+     * Execute logout.
+     * 
+     * @return Closure
+     */
+    public static function logout(): Closure
+    {
+        return function (Request $req): array {
+            return [null, function () use ($req): array {
+                EstablishmentHelper::handleLogoutRequest($req->authData['tokenable_id']);
+
+                return [null, 200, 0];
+            }];
+        };
+    }
+
+    /**
+     * Returns a closure that:
      * Confirm email of establishment.
      * 
      * @return Closure
