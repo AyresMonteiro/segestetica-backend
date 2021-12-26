@@ -4,7 +4,8 @@ namespace App\Http\Handlers;
 
 use App\Exceptions\GenericAppException;
 use App\Http\Handlers\Auth\IAuthSystem;
-use App\Models\Establishment;
+use App\Models\Data\BearerData;
+use Illuminate\Http\Request;
 
 class AuthHandler
 {
@@ -56,5 +57,16 @@ class AuthHandler
   public function removeAccess(array $data)
   {
     $this->authSystem->removeAccess($data);
+  }
+
+  public function getBearerData(Request $req): BearerData
+  {
+    $authorization = $req->headers->get('Authorization');
+
+    if (!isset($authorization) || gettype($authorization) != 'string') {
+      throw new GenericAppException([__('messages.auth.no_authorization')], 401);
+    }
+
+    return new BearerData($authorization);
   }
 }
