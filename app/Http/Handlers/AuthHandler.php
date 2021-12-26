@@ -74,4 +74,9 @@ class AuthHandler
 
     return new BearerData($authorization);
   }
+
+  public function removeAllAccesses(array $data)
+  {
+    $this->authSystem->removeAllAccesses($data);
+  }
 }
