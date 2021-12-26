@@ -117,6 +117,11 @@ class UserHelper
 		return self::login($data['email'], $data['password']);
 	}
 
+	public static function handleLogoutRequest($uuid)
+	{
+		return self::logout($uuid);
+	}
+
 	public static function getTreatedQuery(array $data)
 	{
 		GenericHelper::validate(User::getQueryValidator($data));
@@ -209,5 +214,12 @@ class UserHelper
 			'general-user-login',
 			['user:general'],
 		)->plainTextToken;
+	}
+
+	protected static function logout($uuid)
+	{
+		$authHandler = GenericHelper::getDefaultAuthHandler();
+
+		$authHandler->removeAllAccesses(['uuid' => $uuid]);
 	}
 }
