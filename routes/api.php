@@ -66,6 +66,7 @@ Route::group(['prefix' => 'establishments'], function () {
     Route::get('/{uuid}', LaravelHTTPRequestAdapter::handle(EstablishmentController::show()));
     Route::post('/', LaravelHTTPRequestAdapter::handle(EstablishmentController::store()));
     Route::post('/login', LaravelHTTPRequestAdapter::handle(EstablishmentController::login()));
+    Route::put('/logout', LaravelHTTPRequestAdapter::handle(EstablishmentController::logout()))->middleware(['authenticate.establishment']);
     Route::put('/{uuid}', LaravelHTTPRequestAdapter::handle(EstablishmentController::update()));
     Route::delete('/{uuid}', LaravelHTTPRequestAdapter::handle(EstablishmentController::destroy()));
 });
