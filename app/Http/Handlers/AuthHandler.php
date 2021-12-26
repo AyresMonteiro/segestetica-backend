@@ -24,6 +24,11 @@ class AuthHandler
     $this->authSystem->eraseCache();
   }
 
+  public function getSecurityData(array $data): array
+  {
+    return $this->handleSecurityDataCache($data);
+  }
+
   private function handleSecurityDataCache(array $data)
   {
     if (!isset($this->cacheSecurityData)) {
