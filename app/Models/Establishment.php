@@ -2,15 +2,18 @@
 
 namespace App\Models;
 
+use App\Contracts\HasConfirmationMail;
+use App\Models\Data\{EmailData, EmailViewData};
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Validator;
 use Laravel\Sanctum\HasApiTokens;
 
 /**
  * @OA\Schema()
  */
-class Establishment extends Model
+class Establishment extends Model implements HasConfirmationMail
 {
     use HasFactory, HasApiTokens;
 
@@ -205,5 +208,29 @@ class Establishment extends Model
         $address["city"]->makeHidden('state');
 
         return $address;
+    }
+
+    public function generateConfirmationMailData(): EmailViewData
+    {
+        $viewName = 'confirm_establishment_mail';
+
+        $token = $this->createToken(
+            'confirm-token',
+            ['establishment:confirm-mail'],
+        )->plainTextToken;
+
+        $viewData = [
+            'url' => env('APP_URL') . "/api/establishments/confirm?token=" . urlencode($token),
+        ];
+
+        $contactData = new EmailData($this->name, $this->email);
+
+        return new EmailViewData(
+            $viewName,
+            $viewData,
+            __('messages.mail_confirmation_title'),
+            App::getLocale(),
+            $contactData
+        );
     }
 }
