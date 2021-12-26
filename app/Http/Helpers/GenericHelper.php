@@ -175,7 +175,7 @@ class GenericHelper
   ) {
     if (preg_match(self::SearchRegex, $searchKey)) {
       $attributeName = preg_replace(self::SearchRegex, "$1", $searchKey);
-      return $builderInstance->where($attributeName, "like", '%' . $searchValue . '%');
+      return $builderInstance->where($attributeName, "ilike", '%' . $searchValue . '%');
     }
 
     throw new GenericAppException([__('messages.search_value_validation_fail'), 500]);
