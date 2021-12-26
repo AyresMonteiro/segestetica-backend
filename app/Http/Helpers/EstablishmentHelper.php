@@ -4,7 +4,6 @@ namespace App\Http\Helpers;
 
 use App\Exceptions\GenericAppException;
 use App\Http\Handlers\FileHandler;
-use App\Http\Handlers\Mail\EmailData;
 use App\Http\Helpers\GenericHelper;
 use App\Models\Establishment;
 use Carbon\Carbon;
@@ -50,6 +49,7 @@ class EstablishmentHelper
     ]);
 
     $data['emailConfirmation_different_than'] = null;
+    $data['deleted_different_than'] = true;
 
     return $data;
   }

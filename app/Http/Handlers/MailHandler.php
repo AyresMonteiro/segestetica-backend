@@ -3,7 +3,7 @@
 namespace App\Http\Handlers;
 
 use App\Exceptions\GenericAppException;
-use App\Http\Handlers\Mail\EmailData;
+use App\Models\Data\EmailData;
 use Illuminate\Mail\Markdown;
 use PHPMailer\PHPMailer\PHPMailer;
 
