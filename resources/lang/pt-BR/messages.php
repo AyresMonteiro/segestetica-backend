@@ -28,4 +28,13 @@ return [
     'state' => 'estado',
     'street' => 'rua',
   ],
+
+  'auth' => [
+    'no_authorization' => 'Envie uma autorização válida!',
+    'not_authorized' => 'Você não está autorizado a prosseguir com esta ação!',
+  ],
+
+  'bearer' => [
+    'bad_format' => 'Bearer Token mal formatado!',
+  ],
 ];

@@ -20,4 +20,13 @@ return [
   'can_not' => "You do not have permission.",
   'email_confirmed' => 'Your email has been confirmed.',
   'deleted' => ":entity successfully deleted!",
+
+  'auth' => [
+    'no_authorization' => 'Send a valid authorization!',
+    'not_authorized' => 'You are not authorized to proceed!',
+  ],
+
+  'bearer' => [
+    'bad_format' => 'Bad formatted Bearer Token!',
+  ],
 ];
