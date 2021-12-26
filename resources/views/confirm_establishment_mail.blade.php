@@ -1,9 +1,9 @@
 @component('mail::message')
-<h1>Confirme sua senha.</h1>
-<p>Clique no botão abaixo para confirmar sua senha.</p>
+<h1>{{__('mail.confirmation_mail.title')}}</h1>
+<p>{{__('mail.confirmation_mail.paragraph')}}</p>
 
 @component('mail::button', ['url' => $url])
-  CLIQUE AQUI
+{{__('mail.confirmation_mail.click_here')}}
 @endcomponent
 
 @endcomponent
