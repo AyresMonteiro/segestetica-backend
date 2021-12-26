@@ -8,6 +8,7 @@ use App\Http\Controllers\{
     ScheduleController,
     StateController,
     StreetController,
+    UserController,
 };
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -75,4 +76,13 @@ Route::group(['prefix' => 'schedules'], function () {
     Route::post('/', LaravelHTTPRequestAdapter::handle(ScheduleController::store()));
     Route::put('/{id}', LaravelHTTPRequestAdapter::handle(ScheduleController::update()));
     Route::delete('/{id}', LaravelHTTPRequestAdapter::handle(ScheduleController::destroy()));
+});
+
+Route::group(['prefix' => 'users'], function () {
+    Route::get('/confirm', LaravelHTTPRequestAdapter::handle(UserController::confirmEmail()));
+    Route::get('/{id}', LaravelHTTPRequestAdapter::handle(UserController::show()));
+    Route::post('/', LaravelHTTPRequestAdapter::handle(UserController::store()));
+    Route::post('/login', LaravelHTTPRequestAdapter::handle(UserController::login()));
+    Route::put('/{id}', LaravelHTTPRequestAdapter::handle(UserController::update()));
+    Route::delete('/{id}', LaravelHTTPRequestAdapter::handle(UserController::destroy()));
 });
