@@ -77,7 +77,7 @@ class City extends Model
         return Validator::make($data, [
             'id' => ['nullable', 'integer'],
             'name_search' => ['nullable', 'string', 'regex:' . self::cityNamePattern],
-            'stateId' => ['nullable', 'integer', 'max:255'],
+            'stateId' => ['nullable', 'integer', 'max:27'],
             'created_at_greater_than' => ['nullable', 'date'],
             'created_at_lesser_than' => ['nullable', 'date'],
             'updated_at_greater_than' => ['nullable', 'date'],
