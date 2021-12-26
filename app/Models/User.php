@@ -66,9 +66,9 @@ class User extends Model implements HasConfirmationMail
             'uuid' => ['required', 'string', 'uuid'],
             'name' => ['required', 'string', 'regex:' . self::userNamePattern],
             'lastName' => ['required', 'string', 'regex:' . self::userNamePattern],
-            'email' => ['required', 'string', 'email'],
+            'email' => ['required', 'string', 'email', 'unique:users'],
             'passwordHash' => ['required', 'string'],
-            'phoneNumber' => ['required', 'string', 'regex:' . self::userPhoneNumberSavePattern],
+            'phoneNumber' => ['required', 'string', 'regex:' . self::userPhoneNumberSavePattern, 'unique:users'],
             'neighborhoodId' => ['required', 'integer', 'exists:neighborhoods,id'],
         ]);
     }
@@ -91,9 +91,9 @@ class User extends Model implements HasConfirmationMail
             'uuid' => ['required_without:name,lastName,email,passwordHash,phoneNumber,neighborhoodId,emailConfirmation,deleted', 'string', 'uuid'],
             'name' => ['required_without:uuid,lastName,email,passwordHash,phoneNumber,neighborhoodId,emailConfirmation,deleted', 'string', 'regex:' . self::userNamePattern],
             'lastName' => ['required_without:uuid,name,email,passwordHash,phoneNumber,neighborhoodId,emailConfirmation,deleted', 'string', 'regex:' . self::userNamePattern],
-            'email' => ['required_without:uuid,name,lastName,passwordHash,phoneNumber,neighborhoodId,emailConfirmation,deleted', 'string', 'email'],
+            'email' => ['required_without:uuid,name,lastName,passwordHash,phoneNumber,neighborhoodId,emailConfirmation,deleted', 'string', 'email', 'unique:users'],
             'passwordHash' => ['required_without:uuid,name,lastName,email,phoneNumber,neighborhoodId,emailConfirmation,deleted', 'string'],
-            'phoneNumber' => ['required_without:uuid,name,lastName,email,passwordHash,neighborhoodId,emailConfirmation,deleted', 'string', self::userPhoneNumberSavePattern],
+            'phoneNumber' => ['required_without:uuid,name,lastName,email,passwordHash,neighborhoodId,emailConfirmation,deleted', 'string', 'regex:' . self::userPhoneNumberSavePattern, 'unique:users'],
             'neighborhoodId' => ['required_without:uuid,name,lastName,email,passwordHash,phoneNumber,emailConfirmation,deleted', 'integer', 'exists:neighborhoods,id'],
         ]);
     }
@@ -121,7 +121,7 @@ class User extends Model implements HasConfirmationMail
             'lastName' => ['required_without:uuid,name,email,password,phoneNumber,neighborhoodId,emailConfirmation,deleted', 'string', 'regex:' . self::userNamePattern],
             'email' => ['required_without:uuid,name,lastName,password,phoneNumber,neighborhoodId,emailConfirmation,deleted', 'string', 'email'],
             'password' => ['required_without:uuid,name,lastName,email,phoneNumber,neighborhoodId,emailConfirmation,deleted', 'string'],
-            'phoneNumber' => ['required_without:uuid,name,lastName,email,password,neighborhoodId,emailConfirmation,deleted', 'string', self::userPhoneNumberSavePattern],
+            'phoneNumber' => ['required_without:uuid,name,lastName,email,password,neighborhoodId,emailConfirmation,deleted', 'string', 'regex:' . self::userPhoneNumberParsePattern],
             'neighborhoodId' => ['required_without:uuid,name,lastName,email,password,phoneNumber,emailConfirmation,deleted', 'integer'],
         ]);
     }
