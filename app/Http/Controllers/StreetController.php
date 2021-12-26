@@ -19,15 +19,11 @@ class StreetController extends Controller
     public static function index(): Closure
     {
         return function (Request $req): array {
-            $cache_key = "street_index_";
+            $index_params = StreetHelper::getIndexRequestData($req);
 
-            if (isset($req->streetNeighborhoodId)) {
-                GenericHelper::validate(Street::getQueryValidator([
-                    'neighborhoodId' => $req->streetNeighborhoodId
-                ]));
+            GenericHelper::validate(Street::getQueryValidator($index_params));
 
-                $cache_key .= $req->streetNeighborhoodId;
-            }
+            $cache_key = "street_index_" . md5(json_encode($index_params));
 
             return [$cache_key, function () use ($req): array {
                 $data = StreetHelper::getIndexRequestData($req);

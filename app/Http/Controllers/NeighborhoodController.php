@@ -19,15 +19,11 @@ class NeighborhoodController extends Controller
     public static function index(): Closure
     {
         return function (Request $req): array {
-            $cache_key = "neighborhood_index_";
+            $index_params = NeighborhoodHelper::getIndexRequestData($req);
 
-            if (isset($req->neighborhoodCityId)) {
-                GenericHelper::validate(Neighborhood::getQueryValidator([
-                    'cityId' => $req->neighborhoodCityId
-                ]));
+            GenericHelper::validate(Neighborhood::getQueryValidator($index_params));
 
-                $cache_key .= $req->neighborhoodCityId;
-            }
+            $cache_key = "neighborhood_index_" . md5(json_encode($index_params));
 
             return [$cache_key, function () use ($req): array {
                 $data = NeighborhoodHelper::getIndexRequestData($req);

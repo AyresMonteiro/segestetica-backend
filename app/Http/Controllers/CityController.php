@@ -19,21 +19,17 @@ class CityController extends Controller
     public static function index(): Closure
     {
         return function (Request $req): array {
-            $cache_key = "city_index_";
+            $index_params = CityHelper::getIndexRequestData($req);
 
-            if (isset($req->cityStateId)) {
-                GenericHelper::validate(City::getQueryValidator([
-                    'stateId' => $req->cityStateId
-                ]));
+            GenericHelper::validate(City::getQueryValidator($index_params));
 
-                $cache_key .= $req->cityStateId;
-            }
+            $cache_key = "city_index_" . md5(json_encode($index_params));
 
             return [$cache_key, function () use ($req): array {
                 $data = CityHelper::getIndexRequestData($req);
                 $cities = CityHelper::getCities($data);
 
-                return [$cities, 200, 300];
+                return [$cities, 200, 600];
             }];
         };
     }

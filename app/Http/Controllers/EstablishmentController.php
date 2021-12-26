@@ -21,7 +21,13 @@ class EstablishmentController extends Controller
     public static function index(): Closure
     {
         return function (Request $req): array {
-            return ["establishment_index_", function () use ($req): array {
+            $index_params = EstablishmentHelper::getIndexRequestData($req);
+
+            GenericHelper::validate(Establishment::getQueryValidator($index_params));
+
+            $cache_key = "establishment_index_" . md5(json_encode($index_params));
+
+            return [$cache_key, function () use ($req): array {
                 $data = EstablishmentHelper::getIndexRequestData($req);
                 $establishments = EstablishmentHelper::getEstablishments($data);
                 $establishments->each->append('address');

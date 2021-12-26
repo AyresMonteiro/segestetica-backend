@@ -19,11 +19,17 @@ class StateController extends Controller
     public static function index(): Closure
     {
         return function (Request $req): array {
-            return ["state_index_", function () use ($req) {
+            $index_params = StateHelper::getIndexRequestData($req);
+
+            GenericHelper::validate(State::getQueryValidator($index_params));
+
+            $cache_key = "state_index_" . md5(json_encode($index_params));
+
+            return [$cache_key, function () use ($req) {
                 $data = StateHelper::getIndexRequestData($req);
                 $states = StateHelper::getStates($data);
 
-                return [$states, 200, 300];
+                return [$states, 200, 600];
             }];
         };
     }

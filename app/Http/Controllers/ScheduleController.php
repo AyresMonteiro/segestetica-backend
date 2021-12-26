@@ -21,7 +21,13 @@ class ScheduleController extends Controller
 	public static function index(): Closure
 	{
 		return function (Request $req): array {
-			return ["schedules_", function () use ($req): array {
+			$index_params = ScheduleHelper::getIndexRequestData($req);
+
+			GenericHelper::validate(Schedule::getQueryValidator($index_params));
+
+			$cache_key = "schedules_index_" . md5(json_encode($index_params));
+
+			return [$cache_key, function () use ($req): array {
 				$data = ScheduleHelper::getIndexRequestData($req);
 				$schedules = ScheduleHelper::getSchedules($data);
 				return [$schedules, 200, 60];
