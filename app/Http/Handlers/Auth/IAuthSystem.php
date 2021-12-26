@@ -32,4 +32,9 @@ interface IAuthSystem
    * Remove access.
    */
   public function removeAccess(array $data);
+
+  /**
+   * Remove all accesses.
+   */
+  public function removeAllAccesses(array $data);
 }
