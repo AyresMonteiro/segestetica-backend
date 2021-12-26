@@ -61,6 +61,19 @@ class SanctumAuthSystem implements IAuthSystem
     $this->pat->delete();
   }
 
+  public function removeAllAccesses(array $data)
+  {
+    if (!isset($data['uuid'])) {
+      throw new GenericAppException([__('sanctum.no_id')], 500);
+    }
+
+    $allPats = PersonalAccessToken::where('tokenable_id', '=', $data['uuid'])->get();
+
+    foreach ($allPats as $pat) {
+      $pat->delete();
+    }
+  }
+
   public function eraseCache()
   {
     $this->pat = null;
