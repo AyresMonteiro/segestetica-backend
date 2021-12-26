@@ -2,10 +2,8 @@
 
 namespace App\Jobs;
 
-use App\Exceptions\GenericAppException;
-use App\Http\Handlers\Mail\EmailData;
 use App\Http\Handlers\MailHandler;
-use App\Models\{Establishment, User};
+use App\Models\Data\EmailViewData;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -18,21 +16,17 @@ class SendConfirmationMail implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     /**
-     * 
-     */
-    protected $mailModel;
-
-    public $tries = 3;
-
-    /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct(User|Establishment $model)
+    public function __construct(protected EmailViewData $data)
     {
-        $this->mailModel = $model;
     }
+
+    public $tries = 3;
+
+
 
     /**
      * Execute the job.
@@ -41,47 +35,19 @@ class SendConfirmationMail implements ShouldQueue
      */
     public function handle(MailHandler $mailHandler)
     {
-        App::setLocale('pt-BR');
+        $data = $this->data;
 
-        if ($this->mailModel instanceof Establishment) {
-            $data = self::generateDataFromEstablishment($this->mailModel);
-        } else {
-            throw new GenericAppException([__('messages.system_error')], 500);
-        }
-
-        $viewData = [
-            'url' => $data['url'],
-        ];
+        App::setLocale($data->locale);
 
         $emailsToSendData = [
-            $data['emailData'],
+            $data->contactData,
         ];
 
         $mailHandler->sendView(
-            $data['emailType'],
-            $viewData,
-            __('messages.mail_confirmation_title'),
+            $data->viewName,
+            $data->viewData,
+            $data->mailTitle,
             $emailsToSendData,
         );
-    }
-
-    public static function generateDataFromEstablishment(Establishment $establishment)
-    {
-        $token = $establishment->createToken(
-            'confirm-token',
-            ['establishment:confirm-mail'],
-        )->plainTextToken;
-
-        $url = env('APP_URL') . "/api/establishments/confirm?token=" . urlencode($token);
-
-        $emailData = new EmailData($establishment->name, $establishment->email);
-
-        $emailType = 'confirm_establishment_mail';
-
-        return [
-            'url' => $url,
-            'emailData' => $emailData,
-            'emailType' => $emailType,
-        ];
     }
 }
