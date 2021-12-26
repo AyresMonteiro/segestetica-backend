@@ -109,6 +109,11 @@ class EstablishmentHelper
     return self::login($data['email'], $data['password']);
   }
 
+  public static function handleLogoutRequest($uuid)
+  {
+    return self::logout($uuid);
+  }
+
   public static function handleMailConfirmation(array $data)
   {
     GenericHelper::validate(Establishment::getMailConfirmationValidator($data));
@@ -282,5 +287,12 @@ class EstablishmentHelper
       'general-establishment-login',
       ['establishment:general'],
     )->plainTextToken;
+  }
+
+  protected static function logout($uuid)
+  {
+    $authHandler = GenericHelper::getDefaultAuthHandler();
+
+    $authHandler->removeAllAccesses(['uuid' => $uuid]);
   }
 }
