@@ -42,11 +42,6 @@ class User extends Model implements HasConfirmationMail
     protected $primaryKey = 'uuid';
     public $incrementing = false;
 
-    public function __construct($attributes)
-    {
-        parent::__construct($attributes);
-    }
-
     public static function getQueryValidator(array $data)
     {
         return Validator::make($data, [
