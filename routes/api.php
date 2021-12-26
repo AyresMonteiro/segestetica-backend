@@ -31,17 +31,17 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::group(['prefix' => 'states'], function () {
     Route::get('/', LaravelHTTPRequestAdapter::handle(StateController::index()));
     Route::get('/{id}', LaravelHTTPRequestAdapter::handle(StateController::show()));
-    Route::post('/', LaravelHTTPRequestAdapter::handle(StateController::store()));
-    Route::put('/{id}', LaravelHTTPRequestAdapter::handle(StateController::update()));
-    Route::delete('/{id}', LaravelHTTPRequestAdapter::handle(StateController::destroy()));
+    // Route::post('/', LaravelHTTPRequestAdapter::handle(StateController::store()));
+    // Route::put('/{id}', LaravelHTTPRequestAdapter::handle(StateController::update()));
+    // Route::delete('/{id}', LaravelHTTPRequestAdapter::handle(StateController::destroy()));
 });
 
 Route::group(['prefix' => 'cities'], function () {
     Route::get('/', LaravelHTTPRequestAdapter::handle(CityController::index()));
     Route::get('/{id}', LaravelHTTPRequestAdapter::handle(CityController::show()));
-    Route::post('/', LaravelHTTPRequestAdapter::handle(CityController::store()));
-    Route::put('/{id}', LaravelHTTPRequestAdapter::handle(CityController::update()));
-    Route::delete('/{id}', LaravelHTTPRequestAdapter::handle(CityController::destroy()));
+    // Route::post('/', LaravelHTTPRequestAdapter::handle(CityController::store()));
+    // Route::put('/{id}', LaravelHTTPRequestAdapter::handle(CityController::update()));
+    // Route::delete('/{id}', LaravelHTTPRequestAdapter::handle(CityController::destroy()));
 });
 
 Route::group(['prefix' => 'neighborhoods'], function () {
