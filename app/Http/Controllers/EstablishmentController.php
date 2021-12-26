@@ -44,7 +44,7 @@ class EstablishmentController extends Controller
                 $data = EstablishmentHelper::getStoreRequestData($req);
                 $establishment = EstablishmentHelper::handleStoreRequest($data);
 
-                SendConfirmationMail::dispatch($establishment);
+                SendConfirmationMail::dispatch($establishment->generateConfirmationMailData());
 
                 return [__("messages.confirm_email", [
                     'email_address' => $establishment->email
