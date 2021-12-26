@@ -24,7 +24,7 @@ class GenericHelper
   public const DifferentThanRegex = "/^(.*)_different_than$/";
   public const SearchRegex = "/^(.*)_search$/";
 
-  public static function getDefaultAuthHandler()
+  public static function getDefaultAuthHandler(): AuthHandler
   {
     $defaultAuthSystem = new SanctumAuthSystem();
 
