@@ -80,9 +80,10 @@ Route::group(['prefix' => 'schedules'], function () {
 
 Route::group(['prefix' => 'users'], function () {
     Route::get('/confirm', LaravelHTTPRequestAdapter::handle(UserController::confirmEmail()));
-    Route::get('/{uuid}', LaravelHTTPRequestAdapter::handle(UserController::show()))->middleware(['authenticate.user', 'user.checkUuid']);
+    Route::get('/{uuid}', LaravelHTTPRequestAdapter::handle(UserController::show()))->middleware(['authenticate.user', 'checkUuid.user']);
     Route::post('/', LaravelHTTPRequestAdapter::handle(UserController::store()));
     Route::post('/login', LaravelHTTPRequestAdapter::handle(UserController::login()));
-    Route::put('/{id}', LaravelHTTPRequestAdapter::handle(UserController::update()))->middleware(['authenticate.user', 'user.checkUuid']);
-    Route::delete('/{id}', LaravelHTTPRequestAdapter::handle(UserController::destroy()))->middleware(['authenticate.user', 'user.checkUuid']);
+    Route::put('/logout', LaravelHTTPRequestAdapter::handle(UserController::logout()))->middleware(['authenticate.user']);
+    Route::put('/{id}', LaravelHTTPRequestAdapter::handle(UserController::update()))->middleware(['authenticate.user', 'checkUuid.user']);
+    Route::delete('/{id}', LaravelHTTPRequestAdapter::handle(UserController::destroy()))->middleware(['authenticate.user', 'checkUuid.user']);
 });
