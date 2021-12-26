@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Contracts\HasConfirmationMail;
 use App\Models\Data\EmailData;
 use App\Models\Data\EmailViewData;
+use App\Models\Data\SanctumTokenData;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\App;
@@ -94,6 +95,13 @@ class User extends Model implements HasConfirmationMail
             'passwordHash' => ['required_without:uuid,name,lastName,email,phoneNumber,neighborhoodId,emailConfirmation,deleted', 'string'],
             'phoneNumber' => ['required_without:uuid,name,lastName,email,passwordHash,neighborhoodId,emailConfirmation,deleted', 'string', self::userPhoneNumberSavePattern],
             'neighborhoodId' => ['required_without:uuid,name,lastName,email,passwordHash,phoneNumber,emailConfirmation,deleted', 'integer', 'exists:neighborhoods,id'],
+        ]);
+    }
+
+    public static function getMailConfirmationValidator(array $data)
+    {
+        return Validator::make($data, [
+            'token' => ['required', 'string', 'regex:' . SanctumTokenData::tokenRegex],
         ]);
     }
 
