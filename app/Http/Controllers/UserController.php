@@ -43,11 +43,7 @@ class UserController extends Controller
     public static function show(): Closure
     {
         return function (Request $req): array {
-            GenericHelper::validate(User::getQueryValidator([
-                'uuid' => $req->uuid
-            ]));
-
-            return ["user_" . $req->uuid, function () use ($req): array {
+            return [null, function () use ($req): array {
                 $queryData = ['uuid' => $req->uuid];
                 $user = UserHelper::getUser($queryData);
                 return [$user, 200, 60];
@@ -80,10 +76,7 @@ class UserController extends Controller
     public static function destroy(): Closure
     {
         return function (Request $req): array {
-            GenericHelper::validate(User::getQueryValidator([
-                'uuid' => $req->uuid
-            ]));
-            return ["user_delete_" . $req->uuid, function () use ($req): array {
+            return [null, function () use ($req): array {
                 $queryData = ['id' => $req->uuid];
                 UserHelper::handleDeleteRequest($queryData);
                 return [__('messages.deleted', ['entity' => __('messages.entities.user')]), 200, 300];
