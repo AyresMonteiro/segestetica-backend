@@ -280,7 +280,7 @@ class EstablishmentHelper
 
     return $establishment->createToken(
       'general-establishment-login',
-      ['establishment:general:' . $establishment],
+      ['establishment:general'],
     )->plainTextToken;
   }
 }

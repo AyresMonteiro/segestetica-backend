@@ -207,7 +207,7 @@ class UserHelper
 
 		return $user->createToken(
 			'general-user-login',
-			['user:general:' . $user->uuid],
+			['user:general'],
 		)->plainTextToken;
 	}
 }
