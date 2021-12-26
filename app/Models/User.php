@@ -105,6 +105,14 @@ class User extends Model implements HasConfirmationMail
         ]);
     }
 
+    public static function getLoginRequestValidator(array $data)
+    {
+        return Validator::make($data, [
+            'email' => ['required', 'string', 'email'],
+            'password' => ['required', 'string'],
+        ]);
+    }
+
     public static function getUpdateRequestValidator(array $data)
     {
         return Validator::make($data, [
