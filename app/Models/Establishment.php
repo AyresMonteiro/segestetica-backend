@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Contracts\HasConfirmationMail;
-use App\Models\Data\{EmailData, EmailViewData};
+use App\Models\Data\{EmailData, EmailViewData, SanctumTokenData};
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\App;
@@ -110,7 +110,6 @@ class Establishment extends Model implements HasConfirmationMail
     public $incrementing = false;
 
     public const pathRegex = "/^images[\/].*$/";
-    public const tokenRegex = "/^\d+[|][a-zA-Z0-9]+$/";
 
     public static function getQueryValidator(array $data)
     {
@@ -185,7 +184,7 @@ class Establishment extends Model implements HasConfirmationMail
     public static function getMailConfirmationValidator(array $data)
     {
         return Validator::make($data, [
-            'token' => ['required', 'string', 'regex:' . self::tokenRegex],
+            'token' => ['required', 'string', 'regex:' . SanctumTokenData::tokenRegex],
         ]);
     }
 
