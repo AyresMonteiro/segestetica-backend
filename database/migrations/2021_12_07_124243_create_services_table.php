@@ -17,6 +17,7 @@ class CreateServicesTable extends Migration
             $table->id();
             $table->string('name');
             $table->text('description');
+            $table->boolean('deleted')->default(false);
             $table->integer('integerValue')->default(0);
             $table->integer('fractionalValue')->default(0);
             $table->timestamps();
