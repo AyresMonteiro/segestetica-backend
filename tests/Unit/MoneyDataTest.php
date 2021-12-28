@@ -104,6 +104,24 @@ class MoneyDataTest extends TestCase
         $this->assertEquals("12.04", $sut->getStringValue());
     }
 
+    public function test_assertsIfCorrectlyMultiplicatePositiveIntegerValues()
+    {
+        $sut = self::makeSut(10, 25);
+
+        $sut->multiplicate(5);
+
+        $this->assertEquals("51.25", $sut->getStringValue());
+    }
+
+    public function test_assertsIfCorrectlyMultiplicateNegativeIntegerValues()
+    {
+        $sut = self::makeSut(10, 25);
+
+        $sut->multiplicate(-5);
+
+        $this->assertEquals("-51.25", $sut->getStringValue());
+    }
+
     public function test_assertsIfCorrectlyStaticSumPositiveValues()
     {
         $sut = MoneyData::sumValues(self::makeSut(10, 12), self::makeSut(9, 8));
