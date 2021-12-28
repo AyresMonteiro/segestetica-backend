@@ -111,6 +111,15 @@ class MoneyData
 		$this->resolvesDecimalValue();
 	}
 
+	public function multiplicate(
+		int $integerValue,
+	): void {
+		$this->integerValue *= $integerValue;
+		$this->decimalValue *= $integerValue;
+
+		$this->resolvesDecimalValue();
+	}
+
 	public static function sumValues(MoneyData $firstValue, MoneyData $secondValue): MoneyData
 	{
 		$firstValue->sum($secondValue->integerValue, $secondValue->decimalValue);
