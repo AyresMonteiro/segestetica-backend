@@ -140,4 +140,53 @@ class MoneyDataTest extends TestCase
 
         $this->assertEquals("-0.77", $sut->getStringValue());
     }
+
+    public function test_assertsIfZeroIsEqualsToZero()
+    {
+        $sut = self::makeSut(0, 0);
+
+        $this->assertEquals(true, $sut->checkIfIsEqualsToZero());
+    }
+
+    public function test_assertsIfNegativeValuesGreaterThanMinusOneAreDifferentThanZero()
+    {
+        $sut = self::makeSut(0, -23);
+
+        $this->assertEquals(false, $sut->checkIfIsEqualsToZero());
+    }
+
+    public function test_assertsIfPositiveValuesLesserThanOneAreDifferentThanZero()
+    {
+        $sut = self::makeSut(0, 29);
+
+        $this->assertEquals(false, $sut->checkIfIsEqualsToZero());
+    }
+
+    public function test_assertsIfPositiveNumberIsGreaterThanZero()
+    {
+        $sut = self::makeSut(12, 23);
+
+        $this->assertEquals(true, $sut->checkIfIsGreaterThanZero());
+    }
+
+    public function test_assertsIfNegativeNumberIsNotGreaterThanZero()
+    {
+        $sut = self::makeSut(-12, 23);
+
+        $this->assertEquals(false, $sut->checkIfIsGreaterThanZero());
+    }
+
+    public function test_assertsIfNegativeNumberIsLesserThanZero()
+    {
+        $sut = self::makeSut(-12, 23);
+
+        $this->assertEquals(true, $sut->checkIfIsLesserThanZero());
+    }
+
+    public function test_assertsIfPositiveNumberIsNotLesserThanZero()
+    {
+        $sut = self::makeSut(12, 23);
+
+        $this->assertEquals(false, $sut->checkIfIsLesserThanZero());
+    }
 }
