@@ -55,7 +55,7 @@ class MoneyData
 			return false;
 		}
 
-		return $this->integerValue > 0 || ($this->integerValue == 0 && $this->decimalValue > 0);
+		return $this->integerValue < 0 || ($this->integerValue == 0 && $this->decimalValue < 0);
 	}
 
 	private function resolvesParams($integer, $decimal)
