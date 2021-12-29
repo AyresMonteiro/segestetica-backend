@@ -23,6 +23,15 @@ class Service extends Model
         'updated_at',
     ];
 
+    public function &getMoneyInfo(): ?MoneyData
+    {
+        if ($this->moneyInfo === null) {
+            $this->useModelValuesInMoneyInfo();
+        }
+
+        return $this->moneyInfo;
+    }
+
     public function setMoneyInfo(MoneyData $moneyInfo): void
     {
         $this->moneyInfo = $moneyInfo;
