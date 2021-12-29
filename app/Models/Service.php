@@ -28,13 +28,23 @@ class Service extends Model
         $this->moneyInfo = $moneyInfo;
     }
 
-    public function getValueAttribute()
+    public function useModelValuesInMoneyInfo(): void
     {
-        if ($this->moneyInfo === null) {
+        $hasIntegerValue = isset($this->attributes['integerValue']);
+        $hasFractionalValue = isset($this->attributes['fractionalValue']);
+
+        if ($hasIntegerValue && $hasFractionalValue) {
             $integerValue = $this->attributes['integerValue'];
             $fractionalValue = $this->attributes['fractionalValue'];
 
             $this->setMoneyInfo(new MoneyData($integerValue, $fractionalValue));
+        }
+    }
+
+    public function getValueAttribute()
+    {
+        if ($this->moneyInfo === null) {
+            $this->useModelValuesInMoneyInfo();
         }
 
         return $this->moneyInfo->getStringValue();
