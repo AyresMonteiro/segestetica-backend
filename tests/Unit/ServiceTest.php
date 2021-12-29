@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use App\Models\Data\MoneyData;
 use App\Models\Service;
 use PHPUnit\Framework\TestCase;
 
