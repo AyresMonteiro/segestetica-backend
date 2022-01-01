@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Rules\UnicodeName;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Validator;
@@ -13,7 +14,6 @@ class State extends Model
 {
     use HasFactory;
 
-    const stateNamePattern = "/^(\p{L}| )+$/u";
     const stateAbbreviationPattern = "/^[A-Z]{2,3}$/";
     const stateAbbreviationQueryPattern = "/^[A-Z]{1,3}$/";
 
@@ -37,7 +37,7 @@ class State extends Model
          *      property="name",
          *      format="string",
          *      example="São Paulo",
-         *      pattern="/^(\p{L}| )+$/u",
+         *      pattern="/^(\p{L}| |'|\.)+$/u",
          *  )
          */
         'name',
@@ -78,8 +78,8 @@ class State extends Model
     {
         return Validator::make($data, [
             'id' => ['nullable', 'integer', 'max:255'],
-            'name' => ['nullable', 'string', 'regex:' . self::stateNamePattern],
-            'name_search' => ['nullable', 'string', 'regex:' . self::stateNamePattern],
+            'name' => ['nullable', 'string', new UnicodeName],
+            'name_search' => ['nullable', 'string', new UnicodeName],
             'abbreviation' => ['nullable', 'string', 'regex:' . self::stateAbbreviationPattern],
             'abbreviation_search' => ['nullable', 'string', 'regex:' . self::stateAbbreviationQueryPattern],
             'created_at_greater_than' => ['nullable', 'date'],
@@ -92,7 +92,7 @@ class State extends Model
     public static function getStoreValidator(array $data)
     {
         return Validator::make($data, [
-            'name' => ['required', 'string', 'regex:' . self::stateNamePattern, 'unique:states'],
+            'name' => ['required', 'string', new UnicodeName, 'unique:states'],
             'abbreviation' => ['required', 'string', 'regex:' . self::stateAbbreviationPattern, 'unique:states'],
         ]);
     }
@@ -100,7 +100,7 @@ class State extends Model
     public static function getStoreRequestValidator(array $data)
     {
         return Validator::make($data, [
-            'name' => ['required', 'string', 'regex:' . self::stateNamePattern],
+            'name' => ['required', 'string', new UnicodeName],
             'abbreviation' => ['required', 'string', 'regex:' . self::stateAbbreviationPattern],
         ]);
     }
@@ -108,7 +108,7 @@ class State extends Model
     public static function getUpdateValidator(array $data)
     {
         return Validator::make($data, [
-            'name' => ['required_without_all:abbreviation', 'string', 'regex:' . self::stateNamePattern, 'unique:states'],
+            'name' => ['required_without_all:abbreviation', 'string', new UnicodeName, 'unique:states'],
             'abbreviation' => ['required_without_all:name', 'string', 'regex:' . self::stateAbbreviationPattern, 'unique:states'],
         ]);
     }
@@ -116,7 +116,7 @@ class State extends Model
     public static function getUpdateRequestValidator(array $data)
     {
         return Validator::make($data, [
-            'name' => ['required_without_all:abbreviation', 'string', 'regex:' . self::stateNamePattern],
+            'name' => ['required_without_all:abbreviation', 'string', new UnicodeName],
             'abbreviation' => ['required_without_all:name', 'string', 'regex:' . self::stateAbbreviationPattern],
         ]);
     }

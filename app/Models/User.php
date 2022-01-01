@@ -6,6 +6,7 @@ use App\Contracts\HasConfirmationMail;
 use App\Models\Data\EmailData;
 use App\Models\Data\EmailViewData;
 use App\Models\Data\SanctumTokenData;
+use App\Rules\UnicodeName;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\App;
@@ -16,7 +17,6 @@ class User extends Model implements HasConfirmationMail
 {
     use HasFactory, HasApiTokens;
 
-    const userNamePattern = "/^(\p{L}| )+$/u";
     const userPhoneNumberParsePattern = "/^(\+\d{2})? ?\(?(\d{2})\)? ?(\d)? ?(\d{4})-?(\d{4})$/";
     const userPhoneNumberSavePattern = "/^\+?(\d){10,13}$/";
     const userPhoneNumberSearchPattern = "/^\+?(\d)+$/";
@@ -47,9 +47,9 @@ class User extends Model implements HasConfirmationMail
     {
         return Validator::make($data, [
             'uuid' => ['nullable', 'uuid'],
-            'name_search' => ['nullable', 'string', 'regex:' . self::userNamePattern],
-            'lastName_search' => ['nullable', 'string', 'regex:' . self::userNamePattern],
-            'email_search' => ['nullable', 'string', 'regex:' . self::userNamePattern],
+            'name_search' => ['nullable', 'string', new UnicodeName],
+            'lastName_search' => ['nullable', 'string', new UnicodeName],
+            'email_search' => ['nullable', 'string', new UnicodeName],
             'phoneNumber_search' => ['nullable', 'string', 'regex:' . self::userPhoneNumberSearchPattern],
             'neighborhoodId' => ['nullable', 'integer'],
             'deleted' => ['nullable', 'boolean'],
@@ -64,8 +64,8 @@ class User extends Model implements HasConfirmationMail
     {
         return Validator::make($data, [
             'uuid' => ['required', 'string', 'uuid'],
-            'name' => ['required', 'string', 'regex:' . self::userNamePattern],
-            'lastName' => ['required', 'string', 'regex:' . self::userNamePattern],
+            'name' => ['required', 'string', new UnicodeName],
+            'lastName' => ['required', 'string', new UnicodeName],
             'email' => ['required', 'string', 'email', 'unique:users'],
             'passwordHash' => ['required', 'string'],
             'phoneNumber' => ['required', 'string', 'regex:' . self::userPhoneNumberSavePattern, 'unique:users'],
@@ -76,8 +76,8 @@ class User extends Model implements HasConfirmationMail
     public static function getStoreRequestValidator(array $data)
     {
         return Validator::make($data, [
-            'name' => ['required', 'string', 'regex:' . self::userNamePattern],
-            'lastName' => ['required', 'string', 'regex:' . self::userNamePattern],
+            'name' => ['required', 'string', new UnicodeName],
+            'lastName' => ['required', 'string', new UnicodeName],
             'email' => ['required', 'string', 'email'],
             'password' => ['required', 'string'],
             'phoneNumber' => ['required', 'string', 'regex:' . self::userPhoneNumberParsePattern],
@@ -89,8 +89,8 @@ class User extends Model implements HasConfirmationMail
     {
         return Validator::make($data, [
             'uuid' => ['required_without:name,lastName,email,passwordHash,phoneNumber,neighborhoodId,emailConfirmation,deleted', 'string', 'uuid'],
-            'name' => ['required_without:uuid,lastName,email,passwordHash,phoneNumber,neighborhoodId,emailConfirmation,deleted', 'string', 'regex:' . self::userNamePattern],
-            'lastName' => ['required_without:uuid,name,email,passwordHash,phoneNumber,neighborhoodId,emailConfirmation,deleted', 'string', 'regex:' . self::userNamePattern],
+            'name' => ['required_without:uuid,lastName,email,passwordHash,phoneNumber,neighborhoodId,emailConfirmation,deleted', 'string', new UnicodeName],
+            'lastName' => ['required_without:uuid,name,email,passwordHash,phoneNumber,neighborhoodId,emailConfirmation,deleted', 'string', new UnicodeName],
             'email' => ['required_without:uuid,name,lastName,passwordHash,phoneNumber,neighborhoodId,emailConfirmation,deleted', 'string', 'email', 'unique:users'],
             'passwordHash' => ['required_without:uuid,name,lastName,email,phoneNumber,neighborhoodId,emailConfirmation,deleted', 'string'],
             'phoneNumber' => ['required_without:uuid,name,lastName,email,passwordHash,neighborhoodId,emailConfirmation,deleted', 'string', 'regex:' . self::userPhoneNumberSavePattern, 'unique:users'],
@@ -117,8 +117,8 @@ class User extends Model implements HasConfirmationMail
     {
         return Validator::make($data, [
             'uuid' => ['required_without:name,lastName,email,password,phoneNumber,neighborhoodId,emailConfirmation,deleted', 'string', 'uuid'],
-            'name' => ['required_without:uuid,lastName,email,password,phoneNumber,neighborhoodId,emailConfirmation,deleted', 'string', 'regex:' . self::userNamePattern],
-            'lastName' => ['required_without:uuid,name,email,password,phoneNumber,neighborhoodId,emailConfirmation,deleted', 'string', 'regex:' . self::userNamePattern],
+            'name' => ['required_without:uuid,lastName,email,password,phoneNumber,neighborhoodId,emailConfirmation,deleted', 'string', new UnicodeName],
+            'lastName' => ['required_without:uuid,name,email,password,phoneNumber,neighborhoodId,emailConfirmation,deleted', 'string', new UnicodeName],
             'email' => ['required_without:uuid,name,lastName,password,phoneNumber,neighborhoodId,emailConfirmation,deleted', 'string', 'email'],
             'password' => ['required_without:uuid,name,lastName,email,phoneNumber,neighborhoodId,emailConfirmation,deleted', 'string'],
             'phoneNumber' => ['required_without:uuid,name,lastName,email,password,neighborhoodId,emailConfirmation,deleted', 'string', 'regex:' . self::userPhoneNumberParsePattern],

@@ -10,7 +10,7 @@
  * 			description="Name of state.",
  * 			example="São Paulo",
  * 			type="string",
- *      	pattern="/^(\p{L}| )+$/u",
+ *      	pattern="/^(\p{L}| |'|\.)+$/u",
  * 		),
  * 		@OA\Property(
  * 			property="stateAbbreviation",

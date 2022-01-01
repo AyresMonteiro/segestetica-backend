@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Rules\UnicodeName;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Validator;
@@ -12,8 +13,6 @@ use Illuminate\Support\Facades\Validator;
 class City extends Model
 {
     use HasFactory;
-
-    const cityNamePattern = "/^(\p{L}| )+$/u";
 
     protected $fillable = [
         /**
@@ -35,7 +34,7 @@ class City extends Model
          *      property="name",
          *      format="string",
          *      example="São Paulo",
-         *      pattern="/^(\p{L}| )+$/u",
+         *      pattern="/^(\p{L}| |'|\.)+$/u",
          *  )
          */
         'name',
@@ -76,7 +75,7 @@ class City extends Model
     {
         return Validator::make($data, [
             'id' => ['nullable', 'integer'],
-            'name_search' => ['nullable', 'string', 'regex:' . self::cityNamePattern],
+            'name_search' => ['nullable', 'string', new UnicodeName],
             'stateId' => ['nullable', 'integer', 'max:27'],
             'created_at_greater_than' => ['nullable', 'date'],
             'created_at_lesser_than' => ['nullable', 'date'],
@@ -88,7 +87,7 @@ class City extends Model
     public static function getStoreValidator(array $data)
     {
         return Validator::make($data, [
-            'name' => ['required', 'string', 'regex:' . self::cityNamePattern, 'unique:cities'],
+            'name' => ['required', 'string', new UnicodeName, 'unique:cities'],
             'stateId' => ['required', 'integer', 'max:255', 'exists:states,id'],
         ]);
     }
@@ -96,7 +95,7 @@ class City extends Model
     public static function getStoreRequestValidator(array $data)
     {
         return Validator::make($data, [
-            'name' => ['required', 'string', 'regex:' . self::cityNamePattern],
+            'name' => ['required', 'string', new UnicodeName],
             'stateId' => ['required', 'integer', 'max:255'],
         ]);
     }
@@ -104,7 +103,7 @@ class City extends Model
     public static function getUpdateValidator(array $data)
     {
         return Validator::make($data, [
-            'name' => ['required_without_all:stateId', 'string', 'regex:' . self::cityNamePattern, 'unique:cities'],
+            'name' => ['required_without_all:stateId', 'string', new UnicodeName, 'unique:cities'],
             'stateId' => ['required_without_all:name', 'integer', 'max:255', 'exists:states,id'],
         ]);
     }
@@ -112,7 +111,7 @@ class City extends Model
     public static function getUpdateRequestValidator(array $data)
     {
         return Validator::make($data, [
-            'name' => ['required_without_all:stateId', 'string', 'regex:' . self::cityNamePattern],
+            'name' => ['required_without_all:stateId', 'string', new UnicodeName],
             'stateId' => ['required_without_all:name', 'integer', 'max:255'],
         ]);
     }

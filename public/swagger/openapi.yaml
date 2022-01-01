@@ -19,7 +19,7 @@ paths:
           schema:
             type: string
         -
-          name: cityCityId
+          name: cityStateId
           in: query
           description: 'City''s State Id Foreign.'
           required: false
@@ -295,7 +295,7 @@ paths:
           required: false
           schema:
             type: string
-            pattern: '/^[A-Z]{1-3}$/'
+            pattern: '/^[A-Z]{1,3}$/'
         -
           name: stateCreatedAtGreaterThan
           in: query
@@ -574,7 +574,7 @@ components:
           description: 'City''s Name'
           type: string
           format: string
-          pattern: '/^(\p{L}| )+$/u'
+          pattern: '/^(\p{L}| |''|\.)+$/u'
           example: 'São Paulo'
         stateId:
           description: 'City''s State Id Foreign'
@@ -660,7 +660,7 @@ components:
           description: 'State''s Name'
           type: string
           format: string
-          pattern: '/^(\p{L}| )+$/u'
+          pattern: '/^(\p{L}| |''|\.)+$/u'
           example: 'São Paulo'
         abbreviation:
           description: 'State''s Abbreviation'
@@ -713,7 +713,7 @@ components:
         cityName:
           description: 'Name of city.'
           type: string
-          pattern: '/^(\p{L}| )+$/u'
+          pattern: '/^(\p{L}| |''|\.)+$/u'
           example: 'São Paulo'
         cityStateId:
           description: 'City''s State Identifier.'
@@ -726,12 +726,12 @@ components:
         stateName:
           description: 'Name of state.'
           type: string
-          pattern: '/^(\p{L}| )+$/u'
+          pattern: '/^(\p{L}| |''|\.)+$/u'
           example: 'São Paulo'
         stateAbbreviation:
           description: 'Abbreviation of state.'
           type: string
-          pattern: '/^[A-Z]{2}$/'
+          pattern: '/^[A-Z]{2,3}$/'
           example: SP
       type: object
     ErrorResponse:
