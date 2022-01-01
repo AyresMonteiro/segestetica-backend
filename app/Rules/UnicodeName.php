@@ -6,6 +6,7 @@ use Illuminate\Contracts\Validation\Rule;
 
 class UnicodeName implements Rule
 {
+    public const pattern = "/^(\p{L}| |'|\.)+$/u";
     public ?string $attributeName = null;
 
     /**
@@ -27,11 +28,9 @@ class UnicodeName implements Rule
      */
     public function passes($attribute, $value): bool
     {
-        $valid_pattern = "/^(\p{L}| |'|\.)+$/u";
-
         $this->attributeName = $attribute;
 
-        return preg_match($valid_pattern, $value);
+        return preg_match(self::pattern, $value);
     }
 
     /**
