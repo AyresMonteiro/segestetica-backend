@@ -4,9 +4,9 @@ namespace App\Rules;
 
 use Illuminate\Contracts\Validation\Rule;
 
-class UnicodeName implements Rule
+class UnicodeText implements Rule
 {
-    public const pattern = "/^(\p{L}| |'|\.)+$/u";
+    public const pattern = "/^(\p{L}| |'|\.|,|\?|!|\"|\d|\\\$|;|\(|\))+$/u";
     public ?string $attributeName = null;
 
     /**
@@ -42,7 +42,7 @@ class UnicodeName implements Rule
     {
         $attributeNameTranslationKey = 'validation.attributes.' . $this->attributeName;
 
-        return __('validation.unicode_name', [
+        return __('validation.unicode_text', [
             'attribute' => __($attributeNameTranslationKey) !== null ?
                 __($attributeNameTranslationKey) :
                 $this->attributeName
