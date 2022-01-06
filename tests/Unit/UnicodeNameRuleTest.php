@@ -88,4 +88,11 @@ class UnicodeNameRuleTest extends TestCase
 
 		$this->assertEquals(false, $sut->passes('string', 'that\'s all, i think'));
 	}
+
+	public function test_shouldNotPassStringWithEmoji(): void
+	{
+		$sut = $this->makeSut();
+
+		$this->assertEquals(false, $sut->passes('string', '😋'));
+	}
 }
