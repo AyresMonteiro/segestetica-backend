@@ -53,10 +53,24 @@ class ServiceController extends Controller
 					return [null, 404, 0];
 				}
 
-				$establishmentService = new EstablishmentService([
+				$establishmentServiceData = [
 					'establishmentUuid' => $req->authData['tokenable_id'],
 					'serviceId' => $service->id,
-				]);
+				];
+
+				$establishmentService = EstablishmentService::where($establishmentServiceData)->first();
+
+				if (isset($establishmentService)) {
+					$body = [
+						'errors' => [
+							__('messages.entity_already_exists_error'),
+						],
+					];
+
+					return [$body, 409, 0];
+				}
+
+				$establishmentService = new EstablishmentService($establishmentServiceData);
 
 				$establishmentService->save();
 
