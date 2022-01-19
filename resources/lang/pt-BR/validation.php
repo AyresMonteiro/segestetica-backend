@@ -122,8 +122,8 @@ return [
     'uploaded' => 'O envio do arquivo ":attribute" falhou.',
     'url' => 'O campo ":attribute" precisa ser uma URL válida.',
     'uuid' => 'O campo ":attribute" precisa ser um UUID válido.',
-    'unicode_name' => 'O campo ":attribute" precisa ser um nome válido em Unicode',
-    'unicode_text' => 'O campo ":attribute" precisa ser um texto válido em Unicode',
+    'unicode_name' => 'O campo ":attribute" precisa ser um nome válido em Unicode.',
+    'unicode_text' => 'O campo ":attribute" precisa ser um texto válido em Unicode.',
 
     /*
     |--------------------------------------------------------------------------

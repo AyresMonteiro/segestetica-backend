@@ -20,6 +20,7 @@ return [
   'can_not' => "You do not have permission.",
   'email_confirmed' => 'Your email has been confirmed.',
   'deleted' => ":entity successfully deleted!",
+  'entity_already_exists_error' => 'This relation already exists in database.',
 
   'auth' => [
     'no_authorization' => 'Send a valid authorization!',

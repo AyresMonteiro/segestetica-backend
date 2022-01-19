@@ -20,6 +20,7 @@ return [
   'can_not' => "Você não tem permissão.",
   'email_confirmed' => 'Seu e-mail foi confirmado.',
   'deleted' => ":Entity excluído(a) com sucesso!",
+  'entity_already_exists_error' => 'Esta relação já existe no banco.',
 
   'entities' => [
     'city' => 'cidade',
