@@ -78,6 +78,7 @@ class EstablishmentController extends Controller
                 $establishment = EstablishmentHelper::getEstablishment($queryData, true, false);
 
                 $establishment->append('address');
+                $establishment->services;
 
                 return [$establishment, 200, 60];
             }];
