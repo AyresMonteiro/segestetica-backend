@@ -14,7 +14,7 @@ class StatesAndCitiesSeeder extends Seeder
         $i = 0;
         $cities = [];
         $data = json_decode(file_get_contents(__DIR__ . '/data/estados-e-cidades-do-brasil.json'));
-    
+
         foreach ($data->estados as $key => $estado) {
             $now = Carbon::now();
 
@@ -39,7 +39,7 @@ class StatesAndCitiesSeeder extends Seeder
 
                 $i++;
 
-                if ($i == 500) {
+                if ($i == 1500) {
                     City::insert($cities);
                     $cities = [];
                     $i = 0;
