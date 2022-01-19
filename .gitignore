@@ -3,6 +3,7 @@
 /public/storage
 /public/images
 /storage/*.key
+/storage/app/tests/segestetica.sqlite
 /vendor
 .env
 .env.backup
