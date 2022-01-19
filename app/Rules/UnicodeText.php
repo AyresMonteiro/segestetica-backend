@@ -6,7 +6,7 @@ use Illuminate\Contracts\Validation\Rule;
 
 class UnicodeText implements Rule
 {
-    public const pattern = "/^(\p{L}| |'|\.|,|\?|!|\"|\d|\\\$|;|\(|\))+$/u";
+    public const pattern = "/^(\p{L}| |'|\.|,|\?|!|\"|\d|\\\$|;|\(|\)|:)+$/u";
     public ?string $attributeName = null;
 
     /**
