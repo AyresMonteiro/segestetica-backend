@@ -12,6 +12,7 @@ class ServiceHelper
 	public static function getStoreRequestData(Request $req)
 	{
 		return array_filter([
+			'id' => $req->serviceId,
 			'name' => $req->serviceName,
 			'description' => $req->serviceDescription,
 			'integerValue' => $req->serviceIntegerValue,
