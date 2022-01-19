@@ -209,6 +209,18 @@ class Establishment extends Model implements HasConfirmationMail
         return $address;
     }
 
+    public function services()
+    {
+        return $this->hasManyThrough(
+            Service::class,
+            EstablishmentService::class,
+            'establishmentUuid',
+            'id',
+            'uuid',
+            'serviceId',
+        );
+    }
+
     public function generateConfirmationMailData(): EmailViewData
     {
         $viewName = 'confirm_establishment_mail';
