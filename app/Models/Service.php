@@ -23,6 +23,15 @@ class Service extends Model
         'updated_at',
     ];
 
+    protected $hidden = [
+        'integerValue',
+        'fractionalValue',
+    ];
+
+    protected $appends = [
+        'value',
+    ];
+
     public function &getMoneyInfo(): ?MoneyData
     {
         if ($this->moneyInfo === null) {
