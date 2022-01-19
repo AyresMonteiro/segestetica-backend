@@ -2,6 +2,7 @@
 
 namespace App\Rules;
 
+use App\Utils\TranslatedAttributeName;
 use Illuminate\Contracts\Validation\Rule;
 
 class UnicodeText implements Rule
@@ -40,12 +41,13 @@ class UnicodeText implements Rule
      */
     public function message(): string
     {
-        $attributeNameTranslationKey = 'validation.attributes.' . $this->attributeName;
+        $attribute = TranslatedAttributeName::get(
+            'validation.attributes.' . $this->attributeName
+        );
 
-        return __('validation.unicode_text', [
-            'attribute' => __($attributeNameTranslationKey) !== null ?
-                __($attributeNameTranslationKey) :
-                $this->attributeName
-        ]);
+        return __(
+            'validation.unicode_text',
+            ['attribute' => $attribute]
+        );
     }
 }
