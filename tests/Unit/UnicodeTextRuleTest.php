@@ -89,6 +89,13 @@ class UnicodeTextRuleTest extends TestCase
 		$this->assertEquals(true, $sut->passes('string', 'that\'s all, i think'));
 	}
 
+	public function test_shouldPassTextWithColon(): void
+	{
+		$sut = $this->makeSut();
+
+		$this->assertEquals(true, $sut->passes('string', 'that\'s all: i drink it'));
+	}
+
 	public function test_shouldNotPassTextWithEmoji(): void
 	{
 		$sut = $this->makeSut();
