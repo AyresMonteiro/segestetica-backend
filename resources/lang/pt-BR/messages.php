@@ -37,4 +37,9 @@ return [
   'bearer' => [
     'bad_format' => 'Bearer Token mal formatado!',
   ],
+
+  'money' => [
+    'cents_lesser_than_zero' => 'Os centavos do objeto MoneyData são menores que zero.',
+    'cents_greater_than_one_hundred' => 'Os centavos do objeto MoneyData são maiores que cem.',
+  ],
 ];

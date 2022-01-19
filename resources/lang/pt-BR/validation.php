@@ -122,6 +122,8 @@ return [
     'uploaded' => 'O envio do arquivo ":attribute" falhou.',
     'url' => 'O campo ":attribute" precisa ser uma URL válida.',
     'uuid' => 'O campo ":attribute" precisa ser um UUID válido.',
+    'unicode_name' => 'O campo ":attribute" precisa ser um nome válido em Unicode',
+    'unicode_text' => 'O campo ":attribute" precisa ser um texto válido em Unicode',
 
     /*
     |--------------------------------------------------------------------------
@@ -156,12 +158,14 @@ return [
         'password' => 'senha',
         'name' => 'nome',
         'abbreviation' => 'sigla',
-        'stateId' => 'id_estado',
-        'cityId' => 'id_cidade',
-        'neighborhoodId' => 'id_bairro',
-        'streetId' => 'id_rua',
-        'addressNumber' => "numero_endereco",
-        'passwordHash' => 'senha_ofuscada',
+        'stateId' => 'identificador de estado',
+        'cityId' => 'identificador de cidade',
+        'neighborhoodId' => 'identificador de bairro',
+        'streetId' => 'identificador de rua',
+        'addressNumber' => "número do endereço",
+        'passwordHash' => 'senha ofuscada',
+        'description' => 'descrição',
+        'integerValue' => 'valor inteiro',
+        'fractionalValue' => 'valor fracionário',
     ],
-
 ];

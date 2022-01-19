@@ -29,4 +29,9 @@ return [
   'bearer' => [
     'bad_format' => 'Bad formatted Bearer Token!',
   ],
+
+  'money' => [
+    'cents_lesser_than_zero' => 'Cents of MoneyData are lesser than zero.',
+    'cents_greater_than_one_hundred' => 'Cents of MoneyData are greater than one hundred.',
+  ],
 ];
