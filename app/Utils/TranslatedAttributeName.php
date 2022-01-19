@@ -4,7 +4,7 @@ namespace App\Utils;
 
 class TranslatedAttributeName
 {
-	public static function get($attributeKey): String
+	public static function get(String $attributeKey): String
 	{
 		$attribute = __($attributeKey);
 
@@ -14,5 +14,16 @@ class TranslatedAttributeName
 		}
 
 		return $attribute;
+	}
+
+	public static function getAll(array $attributeKeys): String
+	{
+		$values = "";
+
+		foreach ($attributeKeys as $attributeKey) {
+			$values .= self::get($attributeKey) . " / ";
+		}
+
+		return substr($values, 0, -3);
 	}
 }
