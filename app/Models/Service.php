@@ -71,6 +71,27 @@ class Service extends Model
         return $this->moneyInfo->getStringValue();
     }
 
+    public static function getQueryValidator(array $data)
+    {
+        return Validator::make($data, [
+            'id' => ['nullable', 'integer'],
+            'name' => ['nullable', 'string', new UnicodeName],
+            'description' => ['nullable', 'string', new UnicodeText],
+            'deleted',
+            'integerValue',
+            'fractionalValue',
+            'created_at_greater_than' => ['nullable', 'date'],
+            'created_at_lesser_than' => ['nullable', 'date'],
+            'updated_at_greater_than' => ['nullable', 'date'],
+            'updated_at_lesser_than' => ['nullable', 'date'],
+        ]);
+    }
+
+    public static function getStoreValidator(array $data)
+    {
+        return Validator::make($data, []);
+    }
+
     public static function getStoreRequestValidator(array $data)
     {
         return Validator::make($data, [
@@ -79,5 +100,15 @@ class Service extends Model
             'integerValue' => ['required', 'integer'],
             'fractionalValue' => ['required', 'integer'],
         ]);
+    }
+
+    public static function getUpdateValidator(array $data)
+    {
+        return Validator::make($data, []);
+    }
+
+    public static function getUpdateRequestValidator(array $data)
+    {
+        return Validator::make($data, []);
     }
 }
