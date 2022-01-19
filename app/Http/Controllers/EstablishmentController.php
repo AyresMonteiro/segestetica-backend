@@ -140,9 +140,12 @@ class EstablishmentController extends Controller
             return [null, function () use ($req): array {
                 $data = EstablishmentHelper::getLoginRequestData($req);
 
-                $token = EstablishmentHelper::handleLoginRequest($data);
+                [$token, $uuid] = EstablishmentHelper::handleLoginRequest($data);
 
-                return [['token' => $token], 200, 0];
+                return [[
+                    'uuid' => $uuid,
+                    'token' => $token,
+                ], 200, 0];
             }];
         };
     }

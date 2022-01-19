@@ -283,10 +283,10 @@ class EstablishmentHelper
       throw new GenericAppException([__('validation.password')], 401);
     }
 
-    return $establishment->createToken(
+    return [$establishment->createToken(
       'general-establishment-login',
       ['establishment:general'],
-    )->plainTextToken;
+    )->plainTextToken, $establishment->uuid];
   }
 
   protected static function logout($uuid)

@@ -210,10 +210,10 @@ class UserHelper
 			throw new GenericAppException([__('validation.password')], 401);
 		}
 
-		return $user->createToken(
+		return [$user->createToken(
 			'general-user-login',
 			['user:general'],
-		)->plainTextToken;
+		)->plainTextToken, $user->uuid];
 	}
 
 	protected static function logout($uuid)

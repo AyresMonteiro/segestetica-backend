@@ -96,9 +96,12 @@ class UserController extends Controller
             return [null, function () use ($req): array {
                 $data = UserHelper::getLoginRequestData($req);
 
-                $token = UserHelper::handleLoginRequest($data);
+                [$token, $uuid] = UserHelper::handleLoginRequest($data);
 
-                return [['token' => $token], 200, 0];
+                return [[
+                    'uuid' => $uuid,
+                    'token' => $token,
+                ], 200, 0];
             }];
         };
     }
