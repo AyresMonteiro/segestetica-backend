@@ -593,7 +593,7 @@ class ServicesStoreTest extends TestCaseWithDatabase
 
 		$body = json_decode($response->getContent(), true);
 
-		$message = __('messages.not_found');
+		$message = __('messages.not_found_error');
 
 		$this->assertContains($message, $body['errors']);
 	}
