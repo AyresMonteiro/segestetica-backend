@@ -5,18 +5,41 @@ namespace Tests\Feature\Services;
 use App\Http\Handlers\LogHandler;
 use App\Models\{
 	Establishment,
+	EstablishmentService,
+	Neighborhood,
+	Street,
 };
 use App\Utils\TranslatedAttributeName;
-use Database\Factories\EstablishmentFactory;
+use Database\Factories\{
+	EstablishmentFactory,
+	NeighborhoodFactory,
+	StreetFactory
+};
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Artisan;
 use Tests\TestCaseWithDatabase;
 
 class ServicesStoreTest extends TestCaseWithDatabase
 {
 	use RefreshDatabase;
 
-	protected $sut;
 	protected $locale = 'pt-BR';
+
+	public $sut = null;
+	public static $seeded = false;
+
+	public function generateAddresses(): void
+	{
+		Artisan::call('db:seed');
+
+		$neighborhood = new Neighborhood((new NeighborhoodFactory())->definition());
+
+		$neighborhood->save();
+
+		$street = new Street((new StreetFactory())->definition());
+
+		$street->save();
+	}
 
 	public function makeSut(): SUT
 	{
@@ -80,8 +103,12 @@ class ServicesStoreTest extends TestCaseWithDatabase
 		$body = json_decode($response->getContent(), true);
 
 		$attribute = TranslatedAttributeName::get('validation.attributes.name');
+		$values = TranslatedAttributeName::getAll(['validation.attributes.id']);
 
-		$message = __('validation.required', ['attribute' => $attribute]);
+		$message = __('validation.required_without', [
+			'attribute' => $attribute,
+			'values' => $values
+		]);
 
 		$this->assertContains($message, $body['errors']);
 	}
@@ -121,7 +148,12 @@ class ServicesStoreTest extends TestCaseWithDatabase
 
 		$attribute = TranslatedAttributeName::get('validation.attributes.name');
 
-		$message = __('validation.required', ['attribute' => $attribute]);
+		$values = TranslatedAttributeName::getAll(['validation.attributes.id']);
+
+		$message = __('validation.required_without', [
+			'attribute' => $attribute,
+			'values' => $values
+		]);
 
 		$this->assertContains($message, $body['errors']);
 	}
@@ -161,6 +193,8 @@ class ServicesStoreTest extends TestCaseWithDatabase
 
 		$attribute = TranslatedAttributeName::get('validation.attributes.name');
 
+		$attribute = '"' . $attribute . '"';
+
 		foreach ($body['errors'] as $erro) {
 			$this->assertStringNotContainsString($attribute, $erro);
 		}
@@ -178,7 +212,12 @@ class ServicesStoreTest extends TestCaseWithDatabase
 
 		$attribute = TranslatedAttributeName::get('validation.attributes.description');
 
-		$message = __('validation.required', ['attribute' => $attribute]);
+		$values = TranslatedAttributeName::getAll(['validation.attributes.id']);
+
+		$message = __('validation.required_without', [
+			'attribute' => $attribute,
+			'values' => $values
+		]);
 
 		$this->assertContains($message, $body['errors']);
 	}
@@ -198,7 +237,12 @@ class ServicesStoreTest extends TestCaseWithDatabase
 
 		$attribute = TranslatedAttributeName::get('validation.attributes.description');
 
-		$message = __('validation.required', ['attribute' => $attribute]);
+		$values = TranslatedAttributeName::getAll(['validation.attributes.id']);
+
+		$message = __('validation.required_without', [
+			'attribute' => $attribute,
+			'values' => $values
+		]);
 
 		$this->assertContains($message, $body['errors']);
 	}
@@ -238,6 +282,8 @@ class ServicesStoreTest extends TestCaseWithDatabase
 
 		$attribute = TranslatedAttributeName::get('validation.attributes.description');
 
+		$attribute = '"' . $attribute . '"';
+
 		foreach ($body['errors'] as $erro) {
 			$this->assertStringNotContainsString($attribute, $erro);
 		}
@@ -255,7 +301,12 @@ class ServicesStoreTest extends TestCaseWithDatabase
 
 		$attribute = TranslatedAttributeName::get('validation.attributes.integerValue');
 
-		$message = __('validation.required', ['attribute' => $attribute]);
+		$values = TranslatedAttributeName::getAll(['validation.attributes.id']);
+
+		$message = __('validation.required_without', [
+			'attribute' => $attribute,
+			'values' => $values
+		]);
 
 		$this->assertContains($message, $body['errors']);
 	}
@@ -275,7 +326,12 @@ class ServicesStoreTest extends TestCaseWithDatabase
 
 		$attribute = TranslatedAttributeName::get('validation.attributes.integerValue');
 
-		$message = __('validation.required', ['attribute' => $attribute]);
+		$values = TranslatedAttributeName::getAll(['validation.attributes.id']);
+
+		$message = __('validation.required_without', [
+			'attribute' => $attribute,
+			'values' => $values
+		]);
 
 		$this->assertContains($message, $body['errors']);
 	}
@@ -315,6 +371,8 @@ class ServicesStoreTest extends TestCaseWithDatabase
 
 		$attribute = TranslatedAttributeName::get('validation.attributes.integerValue');
 
+		$attribute = '"' . $attribute . '"';
+
 		foreach ($body['errors'] as $erro) {
 			$this->assertStringNotContainsString($attribute, $erro);
 		}
@@ -332,7 +390,12 @@ class ServicesStoreTest extends TestCaseWithDatabase
 
 		$attribute = TranslatedAttributeName::get('validation.attributes.fractionalValue');
 
-		$message = __('validation.required', ['attribute' => $attribute]);
+		$values = TranslatedAttributeName::getAll(['validation.attributes.id']);
+
+		$message = __('validation.required_without', [
+			'attribute' => $attribute,
+			'values' => $values
+		]);
 
 		$this->assertContains($message, $body['errors']);
 	}
@@ -352,7 +415,12 @@ class ServicesStoreTest extends TestCaseWithDatabase
 
 		$attribute = TranslatedAttributeName::get('validation.attributes.fractionalValue');
 
-		$message = __('validation.required', ['attribute' => $attribute]);
+		$values = TranslatedAttributeName::getAll(['validation.attributes.id']);
+
+		$message = __('validation.required_without', [
+			'attribute' => $attribute,
+			'values' => $values
+		]);
 
 		$this->assertContains($message, $body['errors']);
 	}
@@ -392,9 +460,142 @@ class ServicesStoreTest extends TestCaseWithDatabase
 
 		$attribute = TranslatedAttributeName::get('validation.attributes.fractionalValue');
 
+		$attribute = '"' . $attribute . '"';
+
 		foreach ($body['errors'] as $erro) {
 			$this->assertStringNotContainsString($attribute, $erro);
 		}
+	}
+
+	public function test_AssertsIfReturnsErrorWhenIdIsEmpty(): void
+	{
+		$response = $this->json(
+			'POST',
+			'/api/services',
+			['serviceId' => ''],
+			['Authorization' => 'Bearer ' . $this->sut->token]
+		);
+
+		$response->assertStatus(400);
+
+		$body = json_decode($response->getContent(), true);
+
+		$attribute = TranslatedAttributeName::get('validation.attributes.id');
+
+		$values = TranslatedAttributeName::getAll([
+			'validation.attributes.name',
+			'validation.attributes.description',
+			'validation.attributes.integerValue',
+			'validation.attributes.fractionalValue',
+		]);
+
+		$message = __('validation.required_without', [
+			'attribute' => $attribute,
+			'values' => $values
+		]);
+
+		$this->assertContains($message, $body['errors']);
+	}
+
+	public function test_AssertsIfReturnsErrorWhenIdIsNotAnInteger(): void
+	{
+		$response = $this->json(
+			'POST',
+			'/api/services',
+			['serviceId' => 'abc'],
+			['Authorization' => 'Bearer ' . $this->sut->token]
+		);
+
+		$response->assertStatus(400);
+
+		$body = json_decode($response->getContent(), true);
+
+		$attribute = TranslatedAttributeName::get('validation.attributes.id');
+
+		$message = __('validation.integer', [
+			'attribute' => $attribute,
+		]);
+
+		$this->assertContains($message, $body['errors']);
+	}
+
+	public function test_AssertsIfCanCreateServiceWhenSendId(): void
+	{
+		$response = $this->json(
+			'POST',
+			'/api/services',
+			SUT::CREATE_SERVICE_CORRECT_DATA_1,
+			['Authorization' => 'Bearer ' . $this->sut->token]
+		);
+
+		$response->assertStatus(201);
+
+		$body = json_decode($response->getContent(), true);
+
+		$correctValue =
+			SUT::CREATE_SERVICE_CORRECT_DATA_1['serviceIntegerValue'] .
+			"." .
+			SUT::CREATE_SERVICE_CORRECT_DATA_1['serviceFractionalValue'];
+
+		$this->assertSame($correctValue, $body['value']);
+
+		EstablishmentService::truncate();
+
+		$response = $this->json(
+			'POST',
+			'/api/services',
+			['serviceId' => 1],
+			['Authorization' => 'Bearer ' . $this->sut->token]
+		);
+
+		$response->assertStatus(201);
+
+		$body = json_decode($response->getContent(), true);
+
+		$correctValue =
+			SUT::CREATE_SERVICE_CORRECT_DATA_1['serviceIntegerValue'] .
+			"." .
+			SUT::CREATE_SERVICE_CORRECT_DATA_1['serviceFractionalValue'];
+
+		$this->assertSame($correctValue, $body['value']);
+	}
+
+	public function test_AssertsIfCannotCreateServiceWhenIdDoesntExists(): void
+	{
+		$response = $this->json(
+			'POST',
+			'/api/services',
+			SUT::CREATE_SERVICE_CORRECT_DATA_1,
+			['Authorization' => 'Bearer ' . $this->sut->token]
+		);
+
+		$response->assertStatus(201);
+
+		$body = json_decode($response->getContent(), true);
+
+		$correctValue =
+			SUT::CREATE_SERVICE_CORRECT_DATA_1['serviceIntegerValue'] .
+			"." .
+			SUT::CREATE_SERVICE_CORRECT_DATA_1['serviceFractionalValue'];
+
+		$this->assertSame($correctValue, $body['value']);
+
+		EstablishmentService::truncate();
+
+		$response = $this->json(
+			'POST',
+			'/api/services',
+			['serviceId' => 2],
+			['Authorization' => 'Bearer ' . $this->sut->token]
+		);
+
+		$response->assertStatus(404);
+
+		$body = json_decode($response->getContent(), true);
+
+		$message = __('messages.not_found');
+
+		$this->assertContains($message, $body['errors']);
 	}
 
 	public function test_AssertsIfCanCreateServiceWhenDataIsOk(): void
@@ -416,5 +617,50 @@ class ServicesStoreTest extends TestCaseWithDatabase
 			SUT::CREATE_SERVICE_CORRECT_DATA_1['serviceFractionalValue'];
 
 		$this->assertSame($correctValue, $body['value']);
+	}
+
+	public function test_AssertsIfServiceIsAssociatedWithEstablishmentAfterItsCreation(): void
+	{
+		$this->generateAddresses();
+
+		$response = $this->json(
+			'POST',
+			'/api/services',
+			SUT::CREATE_SERVICE_CORRECT_DATA_1,
+			['Authorization' => 'Bearer ' . $this->sut->token]
+		);
+
+		$response->assertStatus(201);
+
+		$service = json_decode($response->getContent(), true);
+
+		$correctValue =
+			SUT::CREATE_SERVICE_CORRECT_DATA_1['serviceIntegerValue'] .
+			"." .
+			SUT::CREATE_SERVICE_CORRECT_DATA_1['serviceFractionalValue'];
+
+		$this->assertSame($correctValue, $service['value']);
+
+		$response = $this->json(
+			'GET',
+			'/api/establishments/' . $this->sut->establishment->uuid,
+			[],
+			['Authorization' => 'Bearer ' . $this->sut->token]
+		);
+
+		$response->assertStatus(200);
+
+		$body = json_decode($response->getContent(), true);
+
+		$this->assertIsArray($body);
+		$this->assertArrayHasKey('services', $body);
+		$this->assertIsArray($body['services']);
+		$this->assertSame(1, sizeof($body['services']));
+		$this->assertSame($service['id'], $body['services'][0]['id']);
+		$this->assertSame($service['created_at'], $body['services'][0]['created_at']);
+		$this->assertSame($service['updated_at'], $body['services'][0]['updated_at']);
+		$this->assertSame($service['name'], $body['services'][0]['name']);
+		$this->assertSame($service['description'], $body['services'][0]['description']);
+		$this->assertSame($service['value'], $body['services'][0]['value']);
 	}
 }

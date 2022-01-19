@@ -2,8 +2,12 @@
 
 namespace Tests\Feature\Services;
 
-use App\Models\Establishment;
-use App\Models\Service;
+use App\Models\{
+	Establishment,
+	Neighborhood,
+	Service,
+	Street
+};
 
 class SUT
 {
@@ -22,6 +26,8 @@ class SUT
 	];
 
 	public Establishment $establishment;
+	public Neighborhood $neighborhood;
 	public Service $service;
+	public Street $street;
 	public String $token;
 }
