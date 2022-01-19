@@ -519,7 +519,7 @@ class ServicesStoreTest extends TestCaseWithDatabase
 		$this->assertContains($message, $body['errors']);
 	}
 
-	public function test_AssertsIfCanCreateServiceWhenSendId(): void
+	public function test_AssertsIfCanAssociateServiceWhenSendId(): void
 	{
 		$response = $this->json(
 			'POST',
@@ -560,7 +560,7 @@ class ServicesStoreTest extends TestCaseWithDatabase
 		$this->assertSame($correctValue, $body['value']);
 	}
 
-	public function test_AssertsIfCannotCreateServiceWhenIdDoesntExists(): void
+	public function test_AssertsIfCannotAssociateServiceWhenIdDoesntExists(): void
 	{
 		$response = $this->json(
 			'POST',
@@ -598,7 +598,43 @@ class ServicesStoreTest extends TestCaseWithDatabase
 		$this->assertContains($message, $body['errors']);
 	}
 
-	public function test_AssertsIfCanCreateServiceWhenDataIsOk(): void
+	public function test_AssertsIfCannotAssociateServiceWhenIdAlreadyExists(): void
+	{
+		$response = $this->json(
+			'POST',
+			'/api/services',
+			SUT::CREATE_SERVICE_CORRECT_DATA_1,
+			['Authorization' => 'Bearer ' . $this->sut->token]
+		);
+
+		$response->assertStatus(201);
+
+		$body = json_decode($response->getContent(), true);
+
+		$correctValue =
+			SUT::CREATE_SERVICE_CORRECT_DATA_1['serviceIntegerValue'] .
+			"." .
+			SUT::CREATE_SERVICE_CORRECT_DATA_1['serviceFractionalValue'];
+
+		$this->assertSame($correctValue, $body['value']);
+
+		$response = $this->json(
+			'POST',
+			'/api/services',
+			['serviceId' => 1],
+			['Authorization' => 'Bearer ' . $this->sut->token]
+		);
+
+		$response->assertStatus(409);
+
+		$body = json_decode($response->getContent(), true);
+
+		$message = __('messages.entity_already_exists_error');
+
+		$this->assertContains($message, $body['errors']);
+	}
+
+	public function test_AssertsIfCanAssociateServiceWhenDataIsOk(): void
 	{
 		$response = $this->json(
 			'POST',
