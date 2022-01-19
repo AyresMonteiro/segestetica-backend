@@ -3,8 +3,11 @@
 namespace App\Models;
 
 use App\Models\Data\MoneyData;
+use App\Rules\UnicodeName;
+use App\Rules\UnicodeText;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Validator;
 
 class Service extends Model
 {
@@ -66,5 +69,15 @@ class Service extends Model
         }
 
         return $this->moneyInfo->getStringValue();
+    }
+
+    public static function getStoreRequestValidator(array $data)
+    {
+        return Validator::make($data, [
+            'name' => ['required', 'string', new UnicodeName],
+            'description' => ['required', 'string', new UnicodeText],
+            'integerValue' => ['required', 'integer'],
+            'fractionalValue' => ['required', 'integer'],
+        ]);
     }
 }
