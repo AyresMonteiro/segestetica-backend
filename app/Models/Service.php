@@ -95,10 +95,11 @@ class Service extends Model
     public static function getStoreRequestValidator(array $data)
     {
         return Validator::make($data, [
-            'name' => ['required', 'string', new UnicodeName],
-            'description' => ['required', 'string', new UnicodeText],
-            'integerValue' => ['required', 'integer'],
-            'fractionalValue' => ['required', 'integer'],
+            'id' => ['required_without:name,description,integerValue,fractionalValue', 'integer'],
+            'name' => ['required_without:id', 'string', new UnicodeName],
+            'description' => ['required_without:id', 'string', new UnicodeText],
+            'integerValue' => ['required_without:id', 'integer'],
+            'fractionalValue' => ['required_without:id', 'integer'],
         ]);
     }
 
