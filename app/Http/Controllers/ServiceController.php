@@ -6,7 +6,10 @@ use App\Http\Helpers\{
 	GenericHelper,
 	ServiceHelper
 };
-use App\Models\Service;
+use App\Models\{
+	EstablishmentService,
+	Service
+};
 use Closure;
 use Illuminate\Http\Request;
 
@@ -39,7 +42,24 @@ class ServiceController extends Controller
 		return function (Request $req): array {
 			return [null, function () use ($req): array {
 				$data = ServiceHelper::getStoreRequestData($req);
-				$service = ServiceHelper::handleStoreRequest($data);
+
+				if (!isset($data['id'])) {
+					$service = ServiceHelper::handleStoreRequest($data);
+				} else {
+					$service = ServiceHelper::getService(['id' => $data['id']]);
+				}
+
+				if (!isset($service)) {
+					return [null, 404, 0];
+				}
+
+				$establishmentService = new EstablishmentService([
+					'establishmentUuid' => $req->authData['tokenable_id'],
+					'serviceId' => $service->id,
+				]);
+
+				$establishmentService->save();
+
 				return [$service, 201, 0];
 			}];
 		};
