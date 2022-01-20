@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\GenericAppException;
-use App\Http\Handlers\LogHandler;
 use App\Http\Helpers\EstablishmentHelper;
 use App\Http\Helpers\GenericHelper;
 use App\Jobs\SendConfirmationMail;
