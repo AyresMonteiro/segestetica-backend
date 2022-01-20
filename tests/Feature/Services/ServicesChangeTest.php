@@ -201,7 +201,7 @@ class ServicesChangeTest extends TestCaseWithDatabase
 		$this->assertContains($message, $body['errors']);
 	}
 
-	public function test_AssertsIfEstablishmentDoesntShowServiceAnymoreAfterSetInactive(): void
+	public function test_AssertsIfEstablishmentAlwaysCanViewItsOwnServices(): void
 	{
 		Artisan::call('db:seed');
 
@@ -237,14 +237,23 @@ class ServicesChangeTest extends TestCaseWithDatabase
 		$this->assertIsArray($body);
 		$this->assertArrayHasKey('services', $body);
 		$this->assertIsArray($body['services']);
-		$this->assertSame(0, sizeof($body['services']));
+		$this->assertSame(1, sizeof($body['services']));
 	}
 
-	public function test_AssertsIfEstablishmentShowServiceAgainAfterSetActive(): void
+	public function test_AssertsIfUserCannotViewServiceAgainAfterSetInactive(): void
 	{
 		Artisan::call('db:seed');
 
 		$this->generateAddresses();
+
+		$user = new User((new UserFactory())->definition());
+
+		$user->save();
+
+		$token = $user->createToken(
+			User::GENERAL_TOKEN_NAME,
+			[User::GENERAL_ABILITY]
+		)->plainTextToken;
 
 		$uri = $this->getURI(
 			$this->sut->establishment->uuid,
@@ -266,7 +275,55 @@ class ServicesChangeTest extends TestCaseWithDatabase
 			'GET',
 			$uri,
 			[],
+			['Authorization' => 'Bearer ' . $token]
+		);
+
+		$response->assertStatus(200);
+
+		$body = json_decode($response->getContent(), true);
+
+		$this->assertIsArray($body);
+		$this->assertArrayHasKey('services', $body);
+		$this->assertIsArray($body['services']);
+		$this->assertSame(0, sizeof($body['services']));
+	}
+
+	public function test_AssertsIfUserCanViewServiceAgainAfterSetActive(): void
+	{
+		Artisan::call('db:seed');
+
+		$this->generateAddresses();
+
+		$user = new User((new UserFactory())->definition());
+
+		$user->save();
+
+		$token = $user->createToken(
+			User::GENERAL_TOKEN_NAME,
+			[User::GENERAL_ABILITY]
+		)->plainTextToken;
+
+		$uri = $this->getURI(
+			$this->sut->establishment->uuid,
+			$this->sut->service->id
+		);
+
+		$response = $this->json(
+			'PUT',
+			$uri,
+			['serviceActive' => false],
 			['Authorization' => 'Bearer ' . $this->sut->token]
+		);
+
+		$response->assertStatus(204);
+
+		$uri = '/api/establishments/' . $this->sut->establishment->uuid;
+
+		$response = $this->json(
+			'GET',
+			$uri,
+			[],
+			['Authorization' => 'Bearer ' . $token]
 		);
 
 		$response->assertStatus(200);
@@ -298,7 +355,7 @@ class ServicesChangeTest extends TestCaseWithDatabase
 			'GET',
 			$uri,
 			[],
-			['Authorization' => 'Bearer ' . $this->sut->token]
+			['Authorization' => 'Bearer ' . $token]
 		);
 
 		$response->assertStatus(200);
