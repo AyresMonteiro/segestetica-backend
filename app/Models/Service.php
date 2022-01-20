@@ -103,6 +103,15 @@ class Service extends Model
         ]);
     }
 
+    public static function getChangeRequestValidator(array $data)
+    {
+        return Validator::make($data, [
+            'serviceId' => ['required', 'integer'],
+            'establishmentUuid' => ['required', 'uuid'],
+            'active' => ['required', 'boolean'],
+        ]);
+    }
+
     public static function getUpdateValidator(array $data)
     {
         return Validator::make($data, []);
