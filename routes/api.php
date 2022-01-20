@@ -84,7 +84,9 @@ Route::group(['prefix' => 'schedules', 'middleware' => 'authenticate.user'], fun
 });
 
 Route::group(['prefix' => 'services', 'middleware' => 'authenticate.user'], function () {
-    Route::get('/', LaravelHTTPRequestAdapter::handle(ServiceController::index()));
+    Route::group(['middleware' => 'only.establishments'], function () {
+        Route::get('/', LaravelHTTPRequestAdapter::handle(ServiceController::index()));
+    });
     // Route::get('/{id}', LaravelHTTPRequestAdapter::handle(ServiceController::show()));
 
     Route::group(['middleware' => 'checkUuid.establishment'], function () {
