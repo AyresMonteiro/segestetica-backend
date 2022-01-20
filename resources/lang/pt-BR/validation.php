@@ -167,5 +167,6 @@ return [
         'description' => 'descrição',
         'integerValue' => 'valor inteiro',
         'fractionalValue' => 'valor fracionário',
+        'active' => 'ativo',
     ],
 ];
