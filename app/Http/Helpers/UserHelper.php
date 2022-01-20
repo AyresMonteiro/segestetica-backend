@@ -90,7 +90,7 @@ class UserHelper
 
 		$authHandler->checkPermission(
 			$data,
-			'user:confirm-mail'
+			User::CONFIRMATION_ABILITY
 		);
 
 		$user = $authHandler->getModelFromToken(
@@ -211,8 +211,8 @@ class UserHelper
 		}
 
 		return [$user->createToken(
-			'general-user-login',
-			['user:general'],
+			User::GENERAL_TOKEN_NAME,
+			[User::GENERAL_ABILITY],
 		)->plainTextToken, $user->uuid];
 	}
 

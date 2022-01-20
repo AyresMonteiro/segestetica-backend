@@ -17,6 +17,10 @@ class Establishment extends Model implements HasConfirmationMail
 {
     use HasFactory, HasApiTokens;
 
+    const GENERAL_TOKEN_NAME = "general-establishment-login";
+    const GENERAL_ABILITY = "establishment:general";
+    const CONFIRMATION_ABILITY = "establishment:confirm-mail";
+
     protected $fillable = [
         /**
          *  Establishment's Universal Unique Identifier
@@ -227,7 +231,7 @@ class Establishment extends Model implements HasConfirmationMail
 
         $token = $this->createToken(
             'confirm-token',
-            ['establishment:confirm-mail'],
+            [self::CONFIRMATION_ABILITY],
         )->plainTextToken;
 
         $viewData = [

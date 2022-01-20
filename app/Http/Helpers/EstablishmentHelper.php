@@ -124,7 +124,7 @@ class EstablishmentHelper
 
     $authHandler->checkPermission(
       $data,
-      'establishment:confirm-mail'
+      Establishment::CONFIRMATION_ABILITY
     );
 
     $establishment = $authHandler->getModelFromToken(
@@ -284,8 +284,8 @@ class EstablishmentHelper
     }
 
     return [$establishment->createToken(
-      'general-establishment-login',
-      ['establishment:general'],
+      Establishment::GENERAL_TOKEN_NAME,
+      [Establishment::GENERAL_ABILITY],
     )->plainTextToken, $establishment->uuid];
   }
 

@@ -17,6 +17,10 @@ class User extends Model implements HasConfirmationMail
 {
     use HasFactory, HasApiTokens;
 
+    const GENERAL_TOKEN_NAME = "general-user-login";
+    const GENERAL_ABILITY = "user:general";
+    const CONFIRMATION_ABILITY = "user:confirm-mail";
+
     const userPhoneNumberParsePattern = "/^(\+\d{2})? ?\(?(\d{2})\)? ?(\d)? ?(\d{4})-?(\d{4})$/";
     const userPhoneNumberSavePattern = "/^\+?(\d){10,13}$/";
     const userPhoneNumberSearchPattern = "/^\+?(\d)+$/";
@@ -132,7 +136,7 @@ class User extends Model implements HasConfirmationMail
 
         $token = $this->createToken(
             'confirm-token',
-            ['user:confirm-mail'],
+            [self::CONFIRMATION_ABILITY],
         )->plainTextToken;
 
         $viewData = [

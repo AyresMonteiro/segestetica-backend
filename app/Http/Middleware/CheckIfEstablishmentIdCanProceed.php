@@ -22,7 +22,7 @@ class CheckIfEstablishmentIdCanProceed
     public function handle(Request $request, Closure $next)
     {
         try {
-            if ($request->previousMiddleware !== md5(AuthenticateEstablishment::class) || !isset($request->authData)) {
+            if ($request->previousMiddleware !== md5(AuthenticateUser::class) || !isset($request->authData)) {
                 throw new Exception();
             }
 
