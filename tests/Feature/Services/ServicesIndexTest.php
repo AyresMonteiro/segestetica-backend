@@ -93,7 +93,7 @@ class ServicesIndexTest extends TestCaseWithDatabase
 		$response->assertStatus(200);
 	}
 
-	public function test_AssertsIfServicesListNotReturnsErrorWithUserAuth(): void
+	public function test_AssertsIfServicesListReturnsErrorWithUserAuth(): void
 	{
 		$this->generateAddresses();
 
@@ -112,6 +112,6 @@ class ServicesIndexTest extends TestCaseWithDatabase
 			'Authorization' => $auth
 		]);
 
-		$response->assertStatus(200);
+		$response->assertStatus(403);
 	}
 }
