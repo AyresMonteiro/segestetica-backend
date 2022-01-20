@@ -82,10 +82,11 @@ Route::group(['prefix' => 'schedules'], function () {
 
 Route::group(['prefix' => 'services', 'middleware' => 'authenticate.establishment'], function () {
     Route::get('/', LaravelHTTPRequestAdapter::handle(ServiceController::index()));
-    Route::get('/{id}', LaravelHTTPRequestAdapter::handle(ServiceController::show()));
+    // Route::get('/{id}', LaravelHTTPRequestAdapter::handle(ServiceController::show()));
     Route::post('/', LaravelHTTPRequestAdapter::handle(ServiceController::store()));
-    Route::put('/{id}', LaravelHTTPRequestAdapter::handle(ServiceController::update()));
-    Route::delete('/{id}', LaravelHTTPRequestAdapter::handle(ServiceController::destroy()));
+    Route::put('/change/{id}', LaravelHTTPRequestAdapter::handle(ServiceController::change()));
+    // Route::put('/{id}', LaravelHTTPRequestAdapter::handle(ServiceController::update()));
+    // Route::delete('/{id}', LaravelHTTPRequestAdapter::handle(ServiceController::destroy()));
 });
 
 

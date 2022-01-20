@@ -80,6 +80,28 @@ class ServiceController extends Controller
 			}];
 		};
 	}
+
+	public static function change(): Closure
+	{
+		return function (Request $req): array {
+			return [null, function () use ($req): array {
+				$data = ServiceHelper::getChangeRequestData($req);
+
+				$establishmentService = ServiceHelper::handleChangeRequest($data);
+
+				if (!isset($establishmentService)) {
+					return [['errors' => [__('messages.not_found_error')]], 404, 0];
+				}
+
+				$establishmentService->active = $data['active'];
+
+				$establishmentService->save();
+
+				return [null, 204, 0];
+			}];
+		};
+	}
+
 	/**
 	 * Returns a closure that:
 	 * Displays the specified resource.
