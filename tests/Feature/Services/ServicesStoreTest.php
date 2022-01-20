@@ -7,13 +7,15 @@ use App\Models\{
 	EstablishmentService,
 	Neighborhood,
 	Street,
+	User,
 };
 use App\Utils\TranslatedAttributeName;
 use Database\Factories\{
 	EstablishmentFactory,
 	NeighborhoodFactory,
 	ServiceFactory,
-	StreetFactory
+	StreetFactory,
+	UserFactory
 };
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
@@ -53,8 +55,8 @@ class ServicesStoreTest extends TestCaseWithDatabase
 		$sut->establishment = $establishment;
 
 		$sut->token = $establishment->createToken(
-			'general-establishment-login',
-			['establishment:general'],
+			Establishment::GENERAL_TOKEN_NAME,
+			[Establishment::GENERAL_ABILITY],
 		)->plainTextToken;
 
 		$this->serviceData = (new ServiceFactory())->definitionForAPI();
@@ -81,14 +83,40 @@ class ServicesStoreTest extends TestCaseWithDatabase
 
 	public function test_AssertsIfReturnsErrorWithoutAuth(): void
 	{
-		$response = $this->post('/api/services');
+		$response = $this->post('/api/services/' . $this->sut->establishment->uuid);
 
 		$response->assertStatus(401);
 	}
 
+	public function test_AssertsIfReturnsErrorWithUserAuth(): void
+	{
+		$this->generateAddresses();
+
+		$user = new User((new UserFactory())->definition());
+
+		$user->save();
+
+		$token = $user->createToken(
+			User::GENERAL_TOKEN_NAME,
+			[User::GENERAL_ABILITY]
+		)->plainTextToken;
+
+		$response = $this->post('/api/services/' . $this->sut->establishment->uuid, [], [
+			'Authorization' => 'Bearer ' . $token
+		]);
+
+		$response->assertStatus(403);
+
+		$body = json_decode($response->getContent(), true);
+
+		$message = __('messages.auth.not_authorized');
+
+		$this->assertContains($message, $body['errors']);
+	}
+
 	public function test_AssertsIfReturnsErrorWithoutData(): void
 	{
-		$response = $this->post('/api/services', [], [
+		$response = $this->post('/api/services/' . $this->sut->establishment->uuid, [], [
 			'Authorization' => 'Bearer ' . $this->sut->token
 		]);
 
@@ -97,7 +125,7 @@ class ServicesStoreTest extends TestCaseWithDatabase
 
 	public function test_AssertsIfReturnsErrorWithoutName(): void
 	{
-		$response = $this->post('/api/services', [], [
+		$response = $this->post('/api/services/' . $this->sut->establishment->uuid, [], [
 			'Authorization' => 'Bearer ' . $this->sut->token
 		]);
 
@@ -120,7 +148,7 @@ class ServicesStoreTest extends TestCaseWithDatabase
 	{
 		$response = $this->json(
 			'POST',
-			'/api/services',
+			'/api/services/' . $this->sut->establishment->uuid,
 			['serviceName' => 87236812],
 			['Authorization' => 'Bearer ' . $this->sut->token]
 		);
@@ -140,7 +168,7 @@ class ServicesStoreTest extends TestCaseWithDatabase
 	{
 		$response = $this->json(
 			'POST',
-			'/api/services',
+			'/api/services/' . $this->sut->establishment->uuid,
 			['serviceName' => ''],
 			['Authorization' => 'Bearer ' . $this->sut->token]
 		);
@@ -165,7 +193,7 @@ class ServicesStoreTest extends TestCaseWithDatabase
 	{
 		$response = $this->json(
 			'POST',
-			'/api/services',
+			'/api/services/' . $this->sut->establishment->uuid,
 			['serviceName' => "Tetudinho 13"],
 			['Authorization' => 'Bearer ' . $this->sut->token]
 		);
@@ -185,7 +213,7 @@ class ServicesStoreTest extends TestCaseWithDatabase
 	{
 		$response = $this->json(
 			'POST',
-			'/api/services',
+			'/api/services/' . $this->sut->establishment->uuid,
 			['serviceName' => "João da Silva"],
 			['Authorization' => 'Bearer ' . $this->sut->token]
 		);
@@ -205,7 +233,7 @@ class ServicesStoreTest extends TestCaseWithDatabase
 
 	public function test_AssertsIfReturnsErrorWithoutDescription(): void
 	{
-		$response = $this->post('/api/services', [], [
+		$response = $this->post('/api/services/' . $this->sut->establishment->uuid, [], [
 			'Authorization' => 'Bearer ' . $this->sut->token
 		]);
 
@@ -229,7 +257,7 @@ class ServicesStoreTest extends TestCaseWithDatabase
 	{
 		$response = $this->json(
 			'POST',
-			'/api/services',
+			'/api/services/' . $this->sut->establishment->uuid,
 			['serviceDescription' => ''],
 			['Authorization' => 'Bearer ' . $this->sut->token]
 		);
@@ -254,7 +282,7 @@ class ServicesStoreTest extends TestCaseWithDatabase
 	{
 		$response = $this->json(
 			'POST',
-			'/api/services',
+			'/api/services/' . $this->sut->establishment->uuid,
 			['serviceDescription' => "Tetudinho: número 8. 😋"],
 			['Authorization' => 'Bearer ' . $this->sut->token]
 		);
@@ -274,7 +302,7 @@ class ServicesStoreTest extends TestCaseWithDatabase
 	{
 		$response = $this->json(
 			'POST',
-			'/api/services',
+			'/api/services/' . $this->sut->establishment->uuid,
 			['serviceDescription' => "Tetudinho: número 8."],
 			['Authorization' => 'Bearer ' . $this->sut->token]
 		);
@@ -294,7 +322,7 @@ class ServicesStoreTest extends TestCaseWithDatabase
 
 	public function test_AssertsIfReturnsErrorWithoutIntegerValue(): void
 	{
-		$response = $this->post('/api/services', [], [
+		$response = $this->post('/api/services/' . $this->sut->establishment->uuid, [], [
 			'Authorization' => 'Bearer ' . $this->sut->token
 		]);
 
@@ -318,7 +346,7 @@ class ServicesStoreTest extends TestCaseWithDatabase
 	{
 		$response = $this->json(
 			'POST',
-			'/api/services',
+			'/api/services/' . $this->sut->establishment->uuid,
 			['serviceIntegerValue' => ''],
 			['Authorization' => 'Bearer ' . $this->sut->token]
 		);
@@ -343,7 +371,7 @@ class ServicesStoreTest extends TestCaseWithDatabase
 	{
 		$response = $this->json(
 			'POST',
-			'/api/services',
+			'/api/services/' . $this->sut->establishment->uuid,
 			['serviceIntegerValue' => 'seila lek'],
 			['Authorization' => 'Bearer ' . $this->sut->token]
 		);
@@ -363,7 +391,7 @@ class ServicesStoreTest extends TestCaseWithDatabase
 	{
 		$response = $this->json(
 			'POST',
-			'/api/services',
+			'/api/services/' . $this->sut->establishment->uuid,
 			['serviceIntegerValue' => '110'],
 			['Authorization' => 'Bearer ' . $this->sut->token]
 		);
@@ -383,7 +411,7 @@ class ServicesStoreTest extends TestCaseWithDatabase
 
 	public function test_AssertsIfReturnsErrorWithoutFractionalValue(): void
 	{
-		$response = $this->post('/api/services', [], [
+		$response = $this->post('/api/services/' . $this->sut->establishment->uuid, [], [
 			'Authorization' => 'Bearer ' . $this->sut->token
 		]);
 
@@ -407,7 +435,7 @@ class ServicesStoreTest extends TestCaseWithDatabase
 	{
 		$response = $this->json(
 			'POST',
-			'/api/services',
+			'/api/services/' . $this->sut->establishment->uuid,
 			['serviceFractionalValue' => ''],
 			['Authorization' => 'Bearer ' . $this->sut->token]
 		);
@@ -432,7 +460,7 @@ class ServicesStoreTest extends TestCaseWithDatabase
 	{
 		$response = $this->json(
 			'POST',
-			'/api/services',
+			'/api/services/' . $this->sut->establishment->uuid,
 			['serviceFractionalValue' => 'seila lek'],
 			['Authorization' => 'Bearer ' . $this->sut->token]
 		);
@@ -452,7 +480,7 @@ class ServicesStoreTest extends TestCaseWithDatabase
 	{
 		$response = $this->json(
 			'POST',
-			'/api/services',
+			'/api/services/' . $this->sut->establishment->uuid,
 			['serviceFractionalValue' => '110'],
 			['Authorization' => 'Bearer ' . $this->sut->token]
 		);
@@ -474,7 +502,7 @@ class ServicesStoreTest extends TestCaseWithDatabase
 	{
 		$response = $this->json(
 			'POST',
-			'/api/services',
+			'/api/services/' . $this->sut->establishment->uuid,
 			['serviceId' => ''],
 			['Authorization' => 'Bearer ' . $this->sut->token]
 		);
@@ -504,7 +532,7 @@ class ServicesStoreTest extends TestCaseWithDatabase
 	{
 		$response = $this->json(
 			'POST',
-			'/api/services',
+			'/api/services/' . $this->sut->establishment->uuid,
 			['serviceId' => 'abc'],
 			['Authorization' => 'Bearer ' . $this->sut->token]
 		);
@@ -526,7 +554,7 @@ class ServicesStoreTest extends TestCaseWithDatabase
 	{
 		$response = $this->json(
 			'POST',
-			'/api/services',
+			'/api/services/' . $this->sut->establishment->uuid,
 			$this->serviceData,
 			['Authorization' => 'Bearer ' . $this->sut->token]
 		);
@@ -546,7 +574,7 @@ class ServicesStoreTest extends TestCaseWithDatabase
 
 		$response = $this->json(
 			'POST',
-			'/api/services',
+			'/api/services/' . $this->sut->establishment->uuid,
 			['serviceId' => 1],
 			['Authorization' => 'Bearer ' . $this->sut->token]
 		);
@@ -567,7 +595,7 @@ class ServicesStoreTest extends TestCaseWithDatabase
 	{
 		$response = $this->json(
 			'POST',
-			'/api/services',
+			'/api/services/' . $this->sut->establishment->uuid,
 			$this->serviceData,
 			['Authorization' => 'Bearer ' . $this->sut->token]
 		);
@@ -587,7 +615,7 @@ class ServicesStoreTest extends TestCaseWithDatabase
 
 		$response = $this->json(
 			'POST',
-			'/api/services',
+			'/api/services/' . $this->sut->establishment->uuid,
 			['serviceId' => 2],
 			['Authorization' => 'Bearer ' . $this->sut->token]
 		);
@@ -605,7 +633,7 @@ class ServicesStoreTest extends TestCaseWithDatabase
 	{
 		$response = $this->json(
 			'POST',
-			'/api/services',
+			'/api/services/' . $this->sut->establishment->uuid,
 			$this->serviceData,
 			['Authorization' => 'Bearer ' . $this->sut->token]
 		);
@@ -623,7 +651,7 @@ class ServicesStoreTest extends TestCaseWithDatabase
 
 		$response = $this->json(
 			'POST',
-			'/api/services',
+			'/api/services/' . $this->sut->establishment->uuid,
 			['serviceId' => 1],
 			['Authorization' => 'Bearer ' . $this->sut->token]
 		);
@@ -641,7 +669,7 @@ class ServicesStoreTest extends TestCaseWithDatabase
 	{
 		$response = $this->json(
 			'POST',
-			'/api/services',
+			'/api/services/' . $this->sut->establishment->uuid,
 			$this->serviceData,
 			['Authorization' => 'Bearer ' . $this->sut->token]
 		);
@@ -664,7 +692,7 @@ class ServicesStoreTest extends TestCaseWithDatabase
 
 		$response = $this->json(
 			'POST',
-			'/api/services',
+			'/api/services/' . $this->sut->establishment->uuid,
 			$this->serviceData,
 			['Authorization' => 'Bearer ' . $this->sut->token]
 		);

@@ -2,16 +2,45 @@
 
 namespace Tests\Feature\Services;
 
+use App\Http\Handlers\LogHandler;
 use App\Models\{
 	Establishment,
+	Neighborhood,
+	Street,
+	User,
 };
 use Database\Factories\EstablishmentFactory;
+use Database\Factories\NeighborhoodFactory;
+use Database\Factories\StreetFactory;
+use Database\Factories\UserFactory;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Artisan;
 use Tests\TestCaseWithDatabase;
 
 class ServicesIndexTest extends TestCaseWithDatabase
 {
+	use RefreshDatabase;
+
 	protected $sut;
 	protected $locale = 'pt-BR';
+
+	public function generateAddresses(): void
+	{
+		Artisan::call('db:seed');
+
+		$neighborhood = new Neighborhood((new NeighborhoodFactory())->definition());
+
+		$neighborhood->save();
+
+		$street = new Street((new StreetFactory())->definition());
+
+		$street->save();
+	}
+
+	public function getURI(): String
+	{
+		return '/api/services';
+	}
 
 	public function makeSut(): SUT
 	{
@@ -24,8 +53,8 @@ class ServicesIndexTest extends TestCaseWithDatabase
 		$sut->establishment = $establishment;
 
 		$sut->token = $establishment->createToken(
-			'general-establishment-login',
-			['establishment:general'],
+			Establishment::GENERAL_TOKEN_NAME,
+			[Establishment::GENERAL_ABILITY],
 		)->plainTextToken;
 
 		return $sut;
@@ -50,15 +79,37 @@ class ServicesIndexTest extends TestCaseWithDatabase
 
 	public function test_AssertsIfServicesListReturnsErrorWithoutAuth(): void
 	{
-		$response = $this->get('/api/services');
+		$response = $this->get($this->getURI());
 
 		$response->assertStatus(401);
 	}
 
-	public function test_AssertsIfServicesListNotReturnsErrorWithAuth(): void
+	public function test_AssertsIfServicesListNotReturnsErrorWithEstablishmentAuth(): void
 	{
-		$response = $this->get('/api/services', [
+		$response = $this->get($this->getURI(), [
 			'Authorization' => 'Bearer ' . $this->sut->token
+		]);
+
+		$response->assertStatus(200);
+	}
+
+	public function test_AssertsIfServicesListNotReturnsErrorWithUserAuth(): void
+	{
+		$this->generateAddresses();
+
+		$user = new User((new UserFactory())->definition());
+
+		$user->save();
+
+		$token = $user->createToken(
+			User::GENERAL_TOKEN_NAME,
+			[User::GENERAL_ABILITY]
+		)->plainTextToken;
+
+		$auth = 'Bearer ' . $token;
+
+		$response = $this->get($this->getURI(), [
+			'Authorization' => $auth
 		]);
 
 		$response->assertStatus(200);

@@ -8,13 +8,15 @@ use App\Models\{
 	Neighborhood,
 	Service,
 	Street,
+	User,
 };
 use App\Utils\TranslatedAttributeName;
 use Database\Factories\{
 	EstablishmentFactory,
 	NeighborhoodFactory,
 	ServiceFactory,
-	StreetFactory
+	StreetFactory,
+	UserFactory
 };
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Artisan;
@@ -41,6 +43,11 @@ class ServicesChangeTest extends TestCaseWithDatabase
 		$street->save();
 	}
 
+	public function getURI($uuid, $id): String
+	{
+		return '/api/services/' . $uuid . '/change/' . $id;
+	}
+
 	public function makeSut(): SUT
 	{
 		$establishment = new Establishment((new EstablishmentFactory())->definition());
@@ -52,8 +59,8 @@ class ServicesChangeTest extends TestCaseWithDatabase
 		$sut->establishment = $establishment;
 
 		$sut->token = $establishment->createToken(
-			'general-establishment-login',
-			['establishment:general'],
+			Establishment::GENERAL_TOKEN_NAME,
+			[Establishment::GENERAL_ABILITY],
 		)->plainTextToken;
 
 		$service = new Service((new ServiceFactory())->definition());
@@ -94,7 +101,10 @@ class ServicesChangeTest extends TestCaseWithDatabase
 
 	public function test_AssertsIfReturnsErrorWhenNoAuthProvided(): void
 	{
-		$uri = "/api/services/change/" . $this->sut->service->id;
+		$uri = $this->getURI(
+			$this->sut->establishment->uuid,
+			$this->sut->service->id
+		);
 
 		$response = $this->json(
 			'PUT',
@@ -106,9 +116,43 @@ class ServicesChangeTest extends TestCaseWithDatabase
 		$response->assertStatus(401);
 	}
 
+	public function test_AssertsIfReturnsErrorWithUserAuth(): void
+	{
+		$this->generateAddresses();
+
+		$user = new User((new UserFactory())->definition());
+
+		$user->save();
+
+		$token = $user->createToken(
+			User::GENERAL_TOKEN_NAME,
+			[User::GENERAL_ABILITY]
+		)->plainTextToken;
+
+		$uri = $this->getURI(
+			$this->sut->establishment->uuid,
+			$this->sut->service->id
+		);
+
+		$response = $this->put($uri, [], [
+			'Authorization' => 'Bearer ' . $token
+		]);
+
+		$response->assertStatus(403);
+
+		$body = json_decode($response->getContent(), true);
+
+		$message = __('messages.auth.not_authorized');
+
+		$this->assertContains($message, $body['errors']);
+	}
+
 	public function test_AssertsIfReturnsErrorWhenNoDataProvided(): void
 	{
-		$uri = "/api/services/change/" . $this->sut->service->id;
+		$uri = $this->getURI(
+			$this->sut->establishment->uuid,
+			$this->sut->service->id
+		);
 
 		$response = $this->json(
 			'PUT',
@@ -133,7 +177,10 @@ class ServicesChangeTest extends TestCaseWithDatabase
 
 	public function test_AssertsIfReturnsErrorWhenServiceDoesntExists(): void
 	{
-		$uri = "/api/services/change/" . ($this->sut->service->id + 1);
+		$uri = $this->getURI(
+			$this->sut->establishment->uuid,
+			$this->sut->service->id + 1
+		);
 
 		$response = $this->json(
 			'PUT',
@@ -160,7 +207,10 @@ class ServicesChangeTest extends TestCaseWithDatabase
 
 		$this->generateAddresses();
 
-		$uri = "/api/services/change/" . $this->sut->service->id;
+		$uri = $this->getURI(
+			$this->sut->establishment->uuid,
+			$this->sut->service->id
+		);
 
 		$response = $this->json(
 			'PUT',
@@ -196,7 +246,10 @@ class ServicesChangeTest extends TestCaseWithDatabase
 
 		$this->generateAddresses();
 
-		$uri = "/api/services/change/" . $this->sut->service->id;
+		$uri = $this->getURI(
+			$this->sut->establishment->uuid,
+			$this->sut->service->id
+		);
 
 		$response = $this->json(
 			'PUT',
@@ -225,7 +278,8 @@ class ServicesChangeTest extends TestCaseWithDatabase
 		$this->assertIsArray($body['services']);
 		$this->assertSame(0, sizeof($body['services']));
 
-		$uri = "/api/services/change/" . $this->sut->service->id;
+		$uri = '/api/services/' . $this->sut->establishment->uuid .
+			'/change/' . $this->sut->service->id;
 
 		$response = $this->json(
 			'PUT',
