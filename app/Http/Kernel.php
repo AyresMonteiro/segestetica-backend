@@ -67,5 +67,6 @@ class Kernel extends HttpKernel
         'authenticate.user' => \App\Http\Middleware\AuthenticateUser::class,
         'checkUuid.user' => \App\Http\Middleware\CheckIfUserIdCanProceed::class,
         'checkUuid.establishment' => \App\Http\Middleware\CheckIfEstablishmentIdCanProceed::class,
+        'only.establishments' => \App\Http\Middleware\OnlyEstablishment::class,
     ];
 }
