@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Services;
 
-use App\Http\Handlers\LogHandler;
 use App\Models\{
 	Establishment,
 	EstablishmentService,
@@ -13,6 +12,7 @@ use App\Utils\TranslatedAttributeName;
 use Database\Factories\{
 	EstablishmentFactory,
 	NeighborhoodFactory,
+	ServiceFactory,
 	StreetFactory
 };
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -27,6 +27,7 @@ class ServicesStoreTest extends TestCaseWithDatabase
 
 	public $sut = null;
 	public static $seeded = false;
+	public $serviceData = [];
 
 	public function generateAddresses(): void
 	{
@@ -55,6 +56,8 @@ class ServicesStoreTest extends TestCaseWithDatabase
 			'general-establishment-login',
 			['establishment:general'],
 		)->plainTextToken;
+
+		$this->serviceData = (new ServiceFactory())->definitionForAPI();
 
 		return $sut;
 	}
@@ -524,7 +527,7 @@ class ServicesStoreTest extends TestCaseWithDatabase
 		$response = $this->json(
 			'POST',
 			'/api/services',
-			SUT::CREATE_SERVICE_CORRECT_DATA_1,
+			$this->serviceData,
 			['Authorization' => 'Bearer ' . $this->sut->token]
 		);
 
@@ -533,9 +536,9 @@ class ServicesStoreTest extends TestCaseWithDatabase
 		$body = json_decode($response->getContent(), true);
 
 		$correctValue =
-			SUT::CREATE_SERVICE_CORRECT_DATA_1['serviceIntegerValue'] .
+			$this->serviceData['serviceIntegerValue'] .
 			"." .
-			SUT::CREATE_SERVICE_CORRECT_DATA_1['serviceFractionalValue'];
+			$this->serviceData['serviceFractionalValue'];
 
 		$this->assertSame($correctValue, $body['value']);
 
@@ -553,9 +556,9 @@ class ServicesStoreTest extends TestCaseWithDatabase
 		$body = json_decode($response->getContent(), true);
 
 		$correctValue =
-			SUT::CREATE_SERVICE_CORRECT_DATA_1['serviceIntegerValue'] .
+			$this->serviceData['serviceIntegerValue'] .
 			"." .
-			SUT::CREATE_SERVICE_CORRECT_DATA_1['serviceFractionalValue'];
+			$this->serviceData['serviceFractionalValue'];
 
 		$this->assertSame($correctValue, $body['value']);
 	}
@@ -565,7 +568,7 @@ class ServicesStoreTest extends TestCaseWithDatabase
 		$response = $this->json(
 			'POST',
 			'/api/services',
-			SUT::CREATE_SERVICE_CORRECT_DATA_1,
+			$this->serviceData,
 			['Authorization' => 'Bearer ' . $this->sut->token]
 		);
 
@@ -574,9 +577,9 @@ class ServicesStoreTest extends TestCaseWithDatabase
 		$body = json_decode($response->getContent(), true);
 
 		$correctValue =
-			SUT::CREATE_SERVICE_CORRECT_DATA_1['serviceIntegerValue'] .
+			$this->serviceData['serviceIntegerValue'] .
 			"." .
-			SUT::CREATE_SERVICE_CORRECT_DATA_1['serviceFractionalValue'];
+			$this->serviceData['serviceFractionalValue'];
 
 		$this->assertSame($correctValue, $body['value']);
 
@@ -603,7 +606,7 @@ class ServicesStoreTest extends TestCaseWithDatabase
 		$response = $this->json(
 			'POST',
 			'/api/services',
-			SUT::CREATE_SERVICE_CORRECT_DATA_1,
+			$this->serviceData,
 			['Authorization' => 'Bearer ' . $this->sut->token]
 		);
 
@@ -612,9 +615,9 @@ class ServicesStoreTest extends TestCaseWithDatabase
 		$body = json_decode($response->getContent(), true);
 
 		$correctValue =
-			SUT::CREATE_SERVICE_CORRECT_DATA_1['serviceIntegerValue'] .
+			$this->serviceData['serviceIntegerValue'] .
 			"." .
-			SUT::CREATE_SERVICE_CORRECT_DATA_1['serviceFractionalValue'];
+			$this->serviceData['serviceFractionalValue'];
 
 		$this->assertSame($correctValue, $body['value']);
 
@@ -639,7 +642,7 @@ class ServicesStoreTest extends TestCaseWithDatabase
 		$response = $this->json(
 			'POST',
 			'/api/services',
-			SUT::CREATE_SERVICE_CORRECT_DATA_1,
+			$this->serviceData,
 			['Authorization' => 'Bearer ' . $this->sut->token]
 		);
 
@@ -648,9 +651,9 @@ class ServicesStoreTest extends TestCaseWithDatabase
 		$body = json_decode($response->getContent(), true);
 
 		$correctValue =
-			SUT::CREATE_SERVICE_CORRECT_DATA_1['serviceIntegerValue'] .
+			$this->serviceData['serviceIntegerValue'] .
 			"." .
-			SUT::CREATE_SERVICE_CORRECT_DATA_1['serviceFractionalValue'];
+			$this->serviceData['serviceFractionalValue'];
 
 		$this->assertSame($correctValue, $body['value']);
 	}
@@ -662,7 +665,7 @@ class ServicesStoreTest extends TestCaseWithDatabase
 		$response = $this->json(
 			'POST',
 			'/api/services',
-			SUT::CREATE_SERVICE_CORRECT_DATA_1,
+			$this->serviceData,
 			['Authorization' => 'Bearer ' . $this->sut->token]
 		);
 
@@ -671,9 +674,9 @@ class ServicesStoreTest extends TestCaseWithDatabase
 		$service = json_decode($response->getContent(), true);
 
 		$correctValue =
-			SUT::CREATE_SERVICE_CORRECT_DATA_1['serviceIntegerValue'] .
+			$this->serviceData['serviceIntegerValue'] .
 			"." .
-			SUT::CREATE_SERVICE_CORRECT_DATA_1['serviceFractionalValue'];
+			$this->serviceData['serviceFractionalValue'];
 
 		$this->assertSame($correctValue, $service['value']);
 
@@ -698,5 +701,6 @@ class ServicesStoreTest extends TestCaseWithDatabase
 		$this->assertSame($service['name'], $body['services'][0]['name']);
 		$this->assertSame($service['description'], $body['services'][0]['description']);
 		$this->assertSame($service['value'], $body['services'][0]['value']);
+		$this->assertArrayNotHasKey('laravel_through_key', $body['services'][0]);
 	}
 }
