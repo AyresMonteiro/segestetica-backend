@@ -4,6 +4,7 @@ namespace App\Http\Helpers;
 
 use App\Exceptions\GenericAppException;
 use App\Http\Helpers\GenericHelper;
+use App\Models\EstablishmentService;
 use App\Models\Service;
 use Illuminate\Http\Request;
 
@@ -18,6 +19,15 @@ class ServiceHelper
 			'integerValue' => $req->serviceIntegerValue,
 			'fractionalValue' => $req->serviceFractionalValue,
 		]);
+	}
+
+	public static function getChangeRequestData(Request $req)
+	{
+		return [
+			'serviceId' => $req->id,
+			'establishmentUuid' => $req->authData['tokenable_id'],
+			'active' => $req->serviceActive,
+		];
 	}
 
 	public static function getUpdateRequestData(Request $req)
@@ -42,6 +52,17 @@ class ServiceHelper
 		$service = self::saveService($data);
 
 		return $service;
+	}
+
+	public static function handleChangeRequest(array $data)
+	{
+		GenericHelper::validate(Service::getChangeRequestValidator($data));
+
+		unset($data['active']);
+
+		$establishmentService = EstablishmentService::where($data)->first();
+
+		return $establishmentService;
 	}
 
 	public static function handleUpdateRequest(array $findData, array $updateData)
