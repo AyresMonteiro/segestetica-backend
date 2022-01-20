@@ -72,6 +72,8 @@ class ServiceController extends Controller
 
 				$establishmentService = new EstablishmentService($establishmentServiceData);
 
+				$establishmentService->active = true;
+
 				$establishmentService->save();
 
 				return [$service, 201, 0];

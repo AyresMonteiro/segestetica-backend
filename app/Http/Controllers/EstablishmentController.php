@@ -3,12 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Exceptions\GenericAppException;
+use App\Http\Handlers\LogHandler;
 use App\Http\Helpers\EstablishmentHelper;
 use App\Http\Helpers\GenericHelper;
 use App\Jobs\SendConfirmationMail;
 use App\Models\Establishment;
+use App\Models\EstablishmentService;
 use Closure;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class EstablishmentController extends Controller
 {
@@ -78,7 +81,12 @@ class EstablishmentController extends Controller
                 $establishment = EstablishmentHelper::getEstablishment($queryData, true, false);
 
                 $establishment->append('address');
-                $establishment->services;
+
+                $establishment->services = $establishment->services()->where([
+                    'establishment_services.active' => true,
+                ])->get();
+
+                $establishment->services->each->setHidden(['laravel_through_key']);
 
                 return [$establishment, 200, 60];
             }];
