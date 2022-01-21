@@ -14,7 +14,7 @@ class AddsEstablishmentUuidToOrdersTable extends Migration
     public function up()
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->uuid('establishmentUuid');
+            $table->uuid('establishmentUuid')->nullable();
 
             $table->foreign('establishmentUuid')
                 ->references('uuid')
