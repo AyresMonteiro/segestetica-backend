@@ -21,6 +21,10 @@ return [
   'email_confirmed' => 'Seu e-mail foi confirmado.',
   'deleted' => ":Entity excluído(a) com sucesso!",
   'entity_already_exists_error' => 'Esta relação já existe no banco.',
+  'max_orders_limit_reached' => 'Este horário já foi preenchido com o máximo de pedidos possível.',
+  'past_date_error' => 'A data solicitada já passou!',
+  'not_pending_order' => 'Este não é um pedido pendente!',
+  'not_accepted_order' => 'Este não é um pedido aceito!',
 
   'entities' => [
     'city' => 'cidade',
@@ -28,6 +32,7 @@ return [
     'neighborhood' => 'bairro',
     'state' => 'estado',
     'street' => 'rua',
+    'schedule' => 'horário',
   ],
 
   'auth' => [

@@ -78,6 +78,9 @@ class EstablishmentController extends Controller
                 $establishment = EstablishmentHelper::getEstablishment($queryData, true, false);
 
                 $establishment->append('address');
+                $establishment->schedules = $establishment->schedules()->where([
+                    'deleted' => false,
+                ])->get();
 
                 if ($req->authData['tokenable_type'] === Establishment::class) {
                     $establishment->services = $establishment->services()->get();
@@ -87,7 +90,7 @@ class EstablishmentController extends Controller
                     ])->get();
                 }
 
-                $establishment->services->each->setHidden(['laravel_through_key']);
+                $establishment->services->each->setHidden(['laravel_through_key', 'deleted']);
 
                 return [$establishment, 200, 60];
             }];

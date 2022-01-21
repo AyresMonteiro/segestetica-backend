@@ -168,5 +168,11 @@ return [
         'integerValue' => 'valor inteiro',
         'fractionalValue' => 'valor fracionário',
         'active' => 'ativo',
+        'time' => 'horário',
+        'establishmentUuid' => 'identificador de estabelecimento',
+        'maxServices' => 'quantidade máxima de serviços',
+        'duration' => 'duração',
+        'services' =>  'serviços',
+        'day' =>  'dia',
     ],
 ];

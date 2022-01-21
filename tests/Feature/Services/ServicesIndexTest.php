@@ -2,7 +2,6 @@
 
 namespace Tests\Feature\Services;
 
-use App\Http\Handlers\LogHandler;
 use App\Models\{
 	Establishment,
 	Neighborhood,

@@ -225,6 +225,15 @@ class Establishment extends Model implements HasConfirmationMail
         );
     }
 
+    public function schedules()
+    {
+        return $this->hasMany(
+            Schedule::class,
+            'establishmentUuid',
+            'uuid'
+        );
+    }
+
     public function generateConfirmationMailData(): EmailViewData
     {
         $viewName = 'confirm_establishment_mail';

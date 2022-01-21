@@ -14,7 +14,8 @@ class ScheduleHelper
 		return array_filter([
 			'maxServices' => $req->scheduleMaxServices,
 			'time' => $req->scheduleTime,
-			'establishmentUuid' => $req->scheduleEstablishmentUuid,
+			'duration' => $req->scheduleDuration,
+			'establishmentUuid' => $req->uuid,
 		]);
 	}
 
@@ -23,7 +24,8 @@ class ScheduleHelper
 		return array_filter([
 			'maxServices' => $req->scheduleMaxServices,
 			'time' => $req->scheduleTime,
-			'establishmentUuid' => $req->scheduleEstablishmentUuid,
+			'duration' => $req->scheduleDuration,
+			'establishmentUuid' => $req->uuid,
 			'deleted' => $req->scheduleDeleted,
 		]);
 	}
@@ -65,9 +67,11 @@ class ScheduleHelper
 		return $schedule;
 	}
 
-	public static function handleDeleteRequest(array $findData)
+	public static function handleDeleteRequest(array $data)
 	{
-		self::deleteSchedule($findData);
+		GenericHelper::validate(Schedule::getDeleteRequestValidator($data));
+
+		self::deleteSchedule($data);
 	}
 
 	public static function getTreatedQuery(array $data)
@@ -115,7 +119,9 @@ class ScheduleHelper
 	{
 		$schedule = self::getSchedule($data);
 
-		if (!$schedule->delete()) {
+		$schedule->deleted = true;
+
+		if (!$schedule->save()) {
 			throw new GenericAppException([__('messages.delete_error')], 500);
 		};
 	}

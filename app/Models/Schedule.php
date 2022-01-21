@@ -14,6 +14,7 @@ class Schedule extends Model
         'id',
         'maxServices',
         'time',
+        'duration',
         'establishmentUuid',
         'deleted',
         'created_at',
@@ -42,6 +43,7 @@ class Schedule extends Model
         return Validator::make($data, [
             'maxServices' => ['required', 'integer'],
             'time' => ['required', 'date_format:H:i'],
+            'duration' => ['required', 'integer'],
             'establishmentUuid' => ['required', 'uuid', 'exists:establishments,uuid'],
         ]);
     }
@@ -51,6 +53,7 @@ class Schedule extends Model
         return Validator::make($data, [
             'maxServices' => ['required', 'integer'],
             'time' => ['required', 'date_format:H:i'],
+            'duration' => ['required', 'integer'],
             'establishmentUuid' => ['required', 'uuid'],
         ]);
     }
@@ -68,10 +71,19 @@ class Schedule extends Model
     public static function getUpdateRequestValidator(array $data)
     {
         return Validator::make($data, [
-            'maxServices' => ['required_without:time,establishmentUuid,deleted', 'required', 'integer'],
-            'time' => ['required_without:maxServices,establishmentUuid,deleted', 'required', 'date_format:H:i'],
-            'establishmentUuid' => ['required_without:maxServices,time,deleted', 'uuid'],
-            'deleted' => ['required_without:maxServices,time,establishmentUuid', 'nullable', 'boolean'],
+            'maxServices' => ['required_without:time,duration,establishmentUuid,deleted', 'nullable', 'integer'],
+            'time' => ['required_without:maxServices,duration,establishmentUuid,deleted', 'nullable', 'date_format:H:i'],
+            'duration' => ['required_without:maxServices,time,establishmentUuid,deleted', 'nullable', 'integer'],
+            'establishmentUuid' => ['required_without:maxServices,time,duration,deleted', 'required', 'uuid'],
+            'deleted' => ['required_without:maxServices,time,duration,establishmentUuid', 'nullable', 'boolean'],
+        ]);
+    }
+
+    public static function getDeleteRequestValidator(array $data)
+    {
+        return Validator::make($data, [
+            'id' => ['required', 'integer'],
+            'establishmentUuid' => ['required', 'uuid'],
         ]);
     }
 }

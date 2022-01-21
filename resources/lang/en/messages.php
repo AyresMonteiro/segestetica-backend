@@ -21,6 +21,10 @@ return [
   'email_confirmed' => 'Your email has been confirmed.',
   'deleted' => ":entity successfully deleted!",
   'entity_already_exists_error' => 'This relation already exists in database.',
+  'max_orders_limit_reached' => 'This schedule already reached it\'s orders limit for the day.',
+  'past_date_error' => 'The requested date has passed!',
+  'not_pending_order' => 'This is not a pending order!',
+  'not_accepted_order' => 'This is not an accepted order!',
 
   'auth' => [
     'no_authorization' => 'Send a valid authorization!',

@@ -5,6 +5,7 @@ use App\Http\Controllers\{
     CityController,
     EstablishmentController,
     NeighborhoodController,
+    OrderController,
     ScheduleController,
     ServiceController,
     StateController,
@@ -61,32 +62,42 @@ Route::group(['prefix' => 'streets'], function () {
     Route::delete('/{id}', LaravelHTTPRequestAdapter::handle(StreetController::destroy()));
 });
 
-Route::group(['prefix' => 'establishments', 'middleware' => 'authenticate.user'], function () {
+Route::group(['prefix' => 'establishments'], function () {
     Route::get('/', LaravelHTTPRequestAdapter::handle(EstablishmentController::index()));
     Route::get('/confirm', LaravelHTTPRequestAdapter::handle(EstablishmentController::confirmEmail()));
-    Route::get('/{uuid}', LaravelHTTPRequestAdapter::handle(EstablishmentController::show()));
     Route::post('/', LaravelHTTPRequestAdapter::handle(EstablishmentController::store()));
     Route::post('/login', LaravelHTTPRequestAdapter::handle(EstablishmentController::login()));
 
-    Route::group(['middleware' => 'authenticate.establishment'], function () {
-        Route::put('/logout', LaravelHTTPRequestAdapter::handle(EstablishmentController::logout()));
-        Route::put('/{uuid}', LaravelHTTPRequestAdapter::handle(EstablishmentController::update()));
-        Route::delete('/{uuid}', LaravelHTTPRequestAdapter::handle(EstablishmentController::destroy()));
+    Route::group(['middleware' => 'authenticate.user'], function () {
+        Route::get('/{uuid}', LaravelHTTPRequestAdapter::handle(EstablishmentController::show()));
+
+        Route::group(['middleware' => 'only.establishments'], function () {
+            Route::put('/logout', LaravelHTTPRequestAdapter::handle(EstablishmentController::logout()));
+        });
+
+        Route::group(['middleware' => 'checkUuid.establishment'], function () {
+            Route::put('/{uuid}', LaravelHTTPRequestAdapter::handle(EstablishmentController::update()));
+            Route::delete('/{uuid}', LaravelHTTPRequestAdapter::handle(EstablishmentController::destroy()));
+        });
     });
 });
 
-Route::group(['prefix' => 'schedules', 'middleware' => 'authenticate.user'], function () {
-    Route::get('/', LaravelHTTPRequestAdapter::handle(ScheduleController::index()));
-    Route::get('/{id}', LaravelHTTPRequestAdapter::handle(ScheduleController::show()));
-    Route::post('/', LaravelHTTPRequestAdapter::handle(ScheduleController::store()));
-    Route::put('/{id}', LaravelHTTPRequestAdapter::handle(ScheduleController::update()));
-    Route::delete('/{id}', LaravelHTTPRequestAdapter::handle(ScheduleController::destroy()));
+Route::group(['prefix' => 'schedules', 'middleware' => ['authenticate.user', 'only.establishments']], function () {
+    Route::group(['middleware' => 'checkUuid.establishment'], function () {
+        Route::post('/{uuid}', LaravelHTTPRequestAdapter::handle(ScheduleController::store()));
+        Route::delete('/{uuid}/{id}', LaravelHTTPRequestAdapter::handle(ScheduleController::destroy()));
+    });
+
+    // Route::get('/', LaravelHTTPRequestAdapter::handle(ScheduleController::index()));
+    // Route::get('/{id}', LaravelHTTPRequestAdapter::handle(ScheduleController::show()));
+    // Route::put('/{id}', LaravelHTTPRequestAdapter::handle(ScheduleController::update()));
 });
 
 Route::group(['prefix' => 'services', 'middleware' => 'authenticate.user'], function () {
     Route::group(['middleware' => 'only.establishments'], function () {
         Route::get('/', LaravelHTTPRequestAdapter::handle(ServiceController::index()));
     });
+
     // Route::get('/{id}', LaravelHTTPRequestAdapter::handle(ServiceController::show()));
 
     Route::group(['middleware' => 'checkUuid.establishment'], function () {
@@ -99,12 +110,30 @@ Route::group(['prefix' => 'services', 'middleware' => 'authenticate.user'], func
 });
 
 
-Route::group(['prefix' => 'users', 'middleware' => 'authenticate.user'], function () {
-    Route::get('/confirm', LaravelHTTPRequestAdapter::handle(UserController::confirmEmail()));
-    Route::get('/{uuid}', LaravelHTTPRequestAdapter::handle(UserController::show()))->middleware(['authenticate.user', 'checkUuid.user']);
+Route::group(['prefix' => 'users'], function () {
     Route::post('/', LaravelHTTPRequestAdapter::handle(UserController::store()));
     Route::post('/login', LaravelHTTPRequestAdapter::handle(UserController::login()));
-    Route::put('/logout', LaravelHTTPRequestAdapter::handle(UserController::logout()))->middleware(['authenticate.user', 'checkUuid.user']);
-    Route::put('/{id}', LaravelHTTPRequestAdapter::handle(UserController::update()))->middleware(['authenticate.user', 'checkUuid.user']);
-    Route::delete('/{id}', LaravelHTTPRequestAdapter::handle(UserController::destroy()))->middleware(['authenticate.user', 'checkUuid.user']);
+    Route::get('/confirm', LaravelHTTPRequestAdapter::handle(UserController::confirmEmail()));
+
+    Route::group(['middleware' => 'authenticate.user'], function () {
+        Route::put('/logout', LaravelHTTPRequestAdapter::handle(UserController::logout()));
+    });
+
+    Route::group(['middleware' => 'authenticate.user', 'checkUuid.client'], function () {
+        Route::get('/{uuid}', LaravelHTTPRequestAdapter::handle(UserController::show()));
+        Route::put('/{uuid}',  LaravelHTTPRequestAdapter::handle(UserController::update()));
+        Route::delete('/{uuid}', LaravelHTTPRequestAdapter::handle(UserController::destroy()));
+    });
+});
+
+Route::group(['prefix' => 'orders'], function () {
+    Route::group(['middleware' => ['authenticate.user', 'only.clients']], function () {
+        Route::post('/{establishmentUuid}/{scheduleId}', LaravelHTTPRequestAdapter::handle(OrderController::store()));
+    });
+
+    Route::group(['middleware' => ['authenticate.user', 'only.establishments']], function () {
+        Route::get('/', LaravelHTTPRequestAdapter::handle(OrderController::index()));
+        Route::put('/{uuid}', LaravelHTTPRequestAdapter::handle(OrderController::change()));
+        Route::post('/{scheduleId}', LaravelHTTPRequestAdapter::handle(OrderController::store()));
+    });
 });

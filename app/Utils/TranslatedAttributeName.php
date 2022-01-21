@@ -11,6 +11,13 @@ class TranslatedAttributeName
 		if ($attribute === $attributeKey) {
 			$params = explode('.', $attributeKey);
 			$attribute = $params[sizeof($params) - 1];
+			$parts = preg_split('/(?=[A-Z])/', $attribute);
+
+			foreach ($parts as &$part) {
+				$part = strtolower($part);
+			}
+
+			$attribute = join(' ', $parts);
 		}
 
 		return $attribute;

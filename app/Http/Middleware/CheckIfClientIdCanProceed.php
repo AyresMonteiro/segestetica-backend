@@ -9,7 +9,7 @@ use Closure;
 use Exception;
 use Illuminate\Http\Request;
 
-class CheckIfUserIdCanProceed
+class CheckIfClientIdCanProceed
 {
     /**
      * Handle an incoming request.
